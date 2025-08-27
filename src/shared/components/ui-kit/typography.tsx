@@ -1,16 +1,47 @@
 import React from "react";
 import { Platform, StyleSheet, Text, TextStyle } from "react-native";
-import { ITextProps } from "../../hooks/use-theme/types/components";
-import useTheme from "../../hooks/use-theme/use-theme";
+import { Typography as TypographyStyles } from "../../theme";
 
+interface TypographyProps {
+    id?: string;
+    children: React.ReactNode;
+    style?: TextStyle;
+    variant?: keyof typeof TypographyStyles;
+    center?: boolean;
+    color?: string;
+    opacity?: number;
+    size?: number;
+    weight?: string;
+    font?: string;
+    align?: 'auto' | 'left' | 'right' | 'center' | 'justify';
+    transform?: 'none' | 'uppercase' | 'lowercase' | 'capitalize';
+    lineHeight?: number;
+    position?: 'relative' | 'absolute';
+    right?: number;
+    left?: number;
+    top?: number;
+    bottom?: number;
+    marginBottom?: number;
+    marginTop?: number;
+    marginHorizontal?: number;
+    marginVertical?: number;
+    marginRight?: number;
+    marginLeft?: number;
+    paddingBottom?: number;
+    paddingTop?: number;
+    paddingHorizontal?: number;
+    paddingVertical?: number;
+    paddingRight?: number;
+    paddingLeft?: number;
+}
 
-const Typography = (props: ITextProps) => {
+const Typography = (props: TypographyProps) => {
     const {
         id = "Text",
         children,
         style,
+        variant = 'bodyRegular',
         center,
-        gradient,
         color,
         opacity,
         size,
@@ -18,14 +49,8 @@ const Typography = (props: ITextProps) => {
         font,
         align,
         transform,
-        lineHeight,
-        position,
-        right,
-        left,
-        top,
-        bottom,
-        start,
-        end,
+
+
         marginBottom,
         marginTop,
         marginHorizontal,
@@ -40,67 +65,12 @@ const Typography = (props: ITextProps) => {
         paddingLeft,
         ...rest
     } = props;
-    const {colors, sizes, lines, weights, fonts} = useTheme();
-
-    const getColor = () => {
-        if (props.color && colors[props.color]) {
-            return colors[props.color];
-        }
-
-        const selectedColor = Object.keys(colors).find(
-            (key) => props[key as keyof ITextProps],
-        );
-
-        return selectedColor
-            ? colors[selectedColor as keyof typeof colors]
-            : colors.black;
-    };
-
-    const textColor = getColor();
 
     const textStyles = StyleSheet.flatten([
         {
-            color: colors.black,
-            fontSize: sizes.text1,
-            lineHeight: lines.text1,
-            fontWeight: weights.text1,
-            ...(props.h1 && {
-                fontSize: sizes.h1,
-                lineHeight: lines.h1,
-                fontWeight: weights.h1,
-                fontFamily: fonts.h1,
-            }),
-            ...(props.h2 && {
-                fontSize: sizes.h2,
-                lineHeight: lines.h2,
-                fontWeight: weights.h2,
-                fontFamily: fonts.h2,
-            }),
-            ...(props.text1 && {
-                fontSize: sizes.text1,
-                lineHeight: lines.text1,
-                fontWeight: weights.text1,
-                fontFamily: fonts.text1,
-            }),
-            ...(props.text2 && {
-                fontSize: sizes.text2,
-                lineHeight: lines.text2,
-                fontWeight: weights.text2,
-                fontFamily: fonts.text2,
-            }),
-            ...(props.text3 && {
-                fontSize: sizes.text3,
-                lineHeight: lines.text3,
-                fontWeight: weights.text3,
-                fontFamily: fonts.text3,
-            }),
-            ...(props.button && {
-                fontSize: sizes.button,
-                lineHeight: lines.button,
-                fontWeight: weights.button,
-                fontFamily: fonts.button,
-            }),
-            ...(textColor && {color: textColor}),
+            // Базовые стили из темы
+            ...TypographyStyles[variant],
+            color: color || '#1A1A1A', // Используем цвет из props или дефолтный
 
             ...(marginBottom && {marginBottom}),
             ...(marginTop && {marginTop}),
@@ -121,30 +91,13 @@ const Typography = (props: ITextProps) => {
             ...(transform && {textTransform: transform}),
             ...(font && {fontFamily: font}),
             ...(size && {fontSize: size}),
-            ...(color && {color}),
             ...(opacity && {opacity}),
-            ...(lineHeight && {lineHeight}),
-            ...(position && {position}),
-            ...(right !== undefined && {right}),
-            ...(left !== undefined && {left}),
-            ...(top !== undefined && {top}),
-            ...(bottom !== undefined && {bottom}),
+
         },
         style,
     ]) as TextStyle;
 
-    /*
-     * Calculate gradient height container based on text lineHeight or fontSize
-     * add an extra value from marginVertical or marginTop or marginBottom
-     */
-    const gradientHeight =
-        Number(textStyles?.lineHeight || textStyles?.fontSize || 0) +
-        Number(
-            textStyles?.marginVertical ||
-            textStyles?.marginTop ||
-            textStyles?.marginBottom ||
-            0,
-        );
+
 
     // generate component testID or accessibilityLabel based on Platform.OS
     const textID =

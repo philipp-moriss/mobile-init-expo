@@ -1,219 +1,124 @@
-import { Ionicons } from "@expo/vector-icons";
-import React, { useCallback } from "react";
-import { Platform, StyleSheet, TouchableOpacity, ViewStyle, } from "react-native";
-import { IButtonProps } from "../../hooks/use-theme/types/components";
-import useTheme from "../../hooks/use-theme/use-theme";
-import Typography from "./typography";
+import React from 'react';
+import { StyleSheet, Text, TextStyle, TouchableOpacity, ViewStyle } from 'react-native';
 
+import { ButtonSize, ButtonState, ButtonStyles, ButtonType } from '../../constants/Buttons';
+import { Icons20, Icons24 } from '../../constants/Icons';
 
+interface ButtonProps {
+  children: React.ReactNode;
+  onPress?: () => void;
+  type?: ButtonType;
+  state?: ButtonState;
+  size?: ButtonSize;
+  icon?: keyof typeof Icons24 | keyof typeof Icons20;
+  iconPosition?: 'left' | 'right';
+  disabled?: boolean;
+  style?: ViewStyle;
+  containerStyle?: ViewStyle;
+  textStyle?: TextStyle;
+}
 
-const ButtonUi = ({
-    id = "Button",
+const Button: React.FC<ButtonProps> = ({
     children,
+  onPress,
+  type = 'primary',
+  state = 'default',
+  size = 'base',
+  icon,
+  iconPosition = 'left',
+  disabled = false,
     style,
-    color,
-    info,
-    flex,
-    radius,
-    round,
-    rounded,
-    disabled,
-    margin,
-    marginBottom,
-    marginTop,
-    marginHorizontal,
-    marginVertical,
-    marginRight,
-    marginLeft,
-    padding,
-    paddingBottom,
-    paddingTop,
-    paddingHorizontal,
-    paddingVertical,
-    paddingRight,
-    paddingLeft,
-    align,
-    justify,
-    height,
-    width,
-    row,
-    outlined,
-    social,
-    activeOpacity = 0.7,
-    shadow = true,
-    position,
-    right,
-    left,
-    top,
-    bottom,
-    haptic = true,
-    vibrate,
-    vibrateRepeat,
-    onPress,
-    ...props
-}: IButtonProps) => {
-    const { colors, sizes } = useTheme();
+  containerStyle,
+  textStyle,
+}) => {
+  // Получаем стили для выбранного типа и состояния
+  let buttonStyle;
+  
+  if (type === 'text') {
+    // Для Text кнопок используем size как состояние
+    buttonStyle = ButtonStyles.text[size as keyof typeof ButtonStyles.text];
+  } else {
+    // Для остальных кнопок определяем состояние
+    const buttonState: ButtonState = disabled ? 'disabled' : state;
+    buttonStyle = ButtonStyles[type][buttonState];
+  }
+  
+  // Создаем стили для кнопки
+  const buttonStyles = [
+    styles.base,
+    {
+      ...buttonStyle,
+      paddingVertical: buttonStyle.paddingVertical || 16,
+      paddingHorizontal: buttonStyle.paddingHorizontal || 16,
+      borderRadius: buttonStyle.borderRadius || 16,
+    },
+    containerStyle || style,
+  ];
+  
+  // Создаем стили для текста
+  const textStyles = [
+    styles.text,
+    {
+      color: buttonStyle.color,
+      fontSize: buttonStyle.fontSize || 16,
+      lineHeight: buttonStyle.lineHeight || 24,
+      fontWeight: buttonStyle.fontWeight || '600',
+      fontFamily: buttonStyle.fontFamily || 'Onest',
+    },
+    textStyle,
+  ];
 
-    const getColor = () => {
-        if (color && colors[color]) {
-            return colors[color];
-        }
-
-        const selectedColor = Object.keys(colors).find(
-            (key) => props[key as keyof ITextProps],
-        );
-
-        return selectedColor
-            ? colors[selectedColor as keyof typeof colors]
-            : color ? color : colors.primary;
-    };
-
-    const bgColor = getColor();
-
-    const buttonStyles = StyleSheet.flatten([
-        {
-            minHeight: 48,
-            width: "100%",
-            color: colors.black,
-            alignItems: "center",
-            justifyContent: "center",
-            borderRadius: rounded ? sizes.s : 8,
-            ...(bgColor && { backgroundColor: bgColor }),
-            /*    ...(shadow &&
-                  bgColor !== "transparent" && {
-                    shadowColor: colors.text01,
-                    shadowOffset: {
-                      width: sizes.shadowOffsetWidth,
-                      height: sizes.shadowOffsetHeight,
-                    },
-                    shadowOpacity: sizes.shadowOpacity,
-                    shadowRadius: sizes.shadowRadius,
-                    elevation: sizes.elevation,
-                  }),*/
-            ...(row && { flexDirection: "row" }),
-            ...(radius && { borderRadius: radius }),
-            ...(flex !== undefined && { flex }),
-            ...(margin !== undefined && { margin }),
-            ...(marginBottom && { marginBottom }),
-            ...(marginTop && { marginTop }),
-            ...(marginHorizontal && { marginHorizontal }),
-            ...(marginVertical && { marginVertical }),
-            ...(marginRight && { marginRight }),
-            ...(marginLeft && { marginLeft }),
-            ...(padding !== undefined && { padding }),
-            ...(paddingBottom && { paddingBottom }),
-            ...(paddingTop && { paddingTop }),
-            ...(paddingHorizontal && { paddingHorizontal }),
-            ...(paddingVertical && { paddingVertical }),
-            ...(paddingRight && { paddingRight }),
-            ...(paddingLeft && { paddingLeft }),
-            ...(align && { alignItems: align }),
-            ...(justify && { justifyContent: justify }),
-            ...(height && { height }),
-            ...(width && { width }),
-            ...(typeof outlined === "boolean" && {
-                borderWidth: sizes.buttonBorder,
-                borderColor: bgColor,
-                backgroundColor: "transparent",
-            }),
-            ...(typeof outlined === "string" && {
-                borderWidth: sizes.buttonBorder,
-                borderColor: outlined,
-            }),
-            ...(disabled && {
-                opacity: 0.5,
-                backgroundColor: "#EFEFEF",
-            }),
-            ...(position && { position }),
-            ...(right !== undefined && { right }),
-            ...(left !== undefined && { left }),
-            ...(top !== undefined && { top }),
-            ...(bottom !== undefined && { bottom }),
-        },
-        style,
-    ]) as ViewStyle;
-
-    /* handle onPress event */
-    const handlePress = useCallback(
-        (event) => {
-            onPress?.(event);
-
-            /*  /!* vibrate onPress *!/
-              if (vibrate) {
-                Vibration.vibrate(vibrate, vibrateRepeat);
-              }*/
-
-            /* haptic feedback onPress */
-            /* if (haptic) {
-               Haptics.selectionAsync();
-             }*/
-        },
-        [haptic, vibrate, vibrateRepeat, onPress],
-    );
-
-    if (round) {
-        const maxSize = Math.max(
-            Number(buttonStyles.width || 0),
-            Number(buttonStyles.minWidth || 0),
-            Number(buttonStyles.maxWidth || 0),
-            Number(buttonStyles.height || 0),
-            Number(buttonStyles.minHeight || 0),
-            Number(buttonStyles.maxHeight || 0),
-        );
-        buttonStyles.maxWidth = maxSize;
-        buttonStyles.maxHeight = maxSize;
-        buttonStyles.borderRadius = maxSize / 2;
+  // Функция для рендера иконки
+  const renderIcon = (position: 'left' | 'right') => {
+    if (!icon || iconPosition !== position) return null;
+    
+    if (size === 'small') {
+      // Проверяем, есть ли иконка в Icons20
+      if (icon in Icons20) {
+        const IconComponent = Icons20[icon as keyof typeof Icons20];
+        return IconComponent;
+      }
+    } else {
+      // Проверяем, есть ли иконка в Icons24
+      if (icon in Icons24) {
+        const IconComponent = Icons24[icon as keyof typeof Icons24];
+        return IconComponent;
+      }
     }
-
-    const gradientStyles = StyleSheet.flatten([
-        buttonStyles,
-        {
-            flex: 1,
-            width: "100%",
-            ...(round && { maxWidth: buttonStyles.maxWidth }),
-        },
-    ]) as ViewStyle;
-
-    // generate component testID or accessibilityLabel based on Platform.OS
-    const buttonID =
-        Platform.OS === "android" ? { accessibilityLabel: id } : { testID: id };
-
-    if (social) {
-        const socialIcon =
-            social === "facebook"
-                ? "logo-facebook"
-                : social === "twitter"
-                    ? "logo-twitter"
-                    : "logo-dribbble";
+    
+    return null;
+  };
 
         return (
             <TouchableOpacity
+      style={buttonStyles}
+      onPress={onPress}
                 disabled={disabled}
-                {...buttonID}
-                activeOpacity={activeOpacity}
-                onPress={handlePress}
-                {...props}
-                style={buttonStyles}
-            >
-                <Ionicons name={socialIcon} />
-            </TouchableOpacity>
-        );
-    }
-
-    return (
-        <TouchableOpacity
-            disabled={disabled}
-            {...buttonID}
-            activeOpacity={activeOpacity}
-            onPress={handlePress}
-            {...props}
-            style={buttonStyles}
-        >
-            <Typography black text1 >
-                {children}
-            </Typography>
+      activeOpacity={0.8}
+    >
+      {renderIcon('left')}
+      
+      {typeof children === 'string' ? (
+        <Text style={textStyles}>{children}</Text>
+      ) : (
+        children
+      )}
+      
+      {renderIcon('right')}
         </TouchableOpacity>
     );
 };
 
-export default React.memo(ButtonUi);
+const styles = StyleSheet.create({
+  base: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  text: {
+    textAlign: 'center',
+  },
+});
+
+export default Button;

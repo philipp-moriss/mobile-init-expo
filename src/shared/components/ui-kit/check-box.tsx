@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
-import useTheme from '../../hooks/use-theme/use-theme';
+import { useTheme } from '../../theme';
 import { DoneIcon } from '../../icons/icons/done-icon';
 
 interface CheckBoxProps {

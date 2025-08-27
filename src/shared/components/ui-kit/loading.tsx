@@ -1,12 +1,11 @@
 import React, { memo } from "react";
 import { ActivityIndicator, Modal, StyleSheet, View } from "react-native";
-import useTheme from "../../hooks/use-theme/use-theme";
+import { Primary } from "../../theme";
 
 type IProps = {
     visible: boolean;
 };
 const Loading = memo(({visible}: IProps) => {
-    const {colors} = useTheme();
     return (
         <Modal transparent visible={visible}>
             <View
@@ -21,7 +20,7 @@ const Loading = memo(({visible}: IProps) => {
                 }}
             />
             <View style={styles.container}>
-                <ActivityIndicator style={{width: 42, height: 42}} color={colors.primary}/>
+                <ActivityIndicator style={{width: 42, height: 42}} color={Primary.primary500}/>
             </View>
         </Modal>
     );

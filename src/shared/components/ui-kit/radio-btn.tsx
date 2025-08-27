@@ -1,7 +1,7 @@
 import React from "react";
 import { TouchableOpacity, View } from "react-native";
 
-import useTheme from "../../hooks/use-theme/use-theme";
+import { Palette } from "../../theme";
 import Typography from "./typography";
 
 interface IRadioBtn {
@@ -12,7 +12,6 @@ interface IRadioBtn {
 }
 
 const RadioBtn: React.FC<IRadioBtn> = ({ onPress, val, title, disabled }) => {
-    const { colors } = useTheme();
 
     return (
         <TouchableOpacity
@@ -37,7 +36,7 @@ const RadioBtn: React.FC<IRadioBtn> = ({ onPress, val, title, disabled }) => {
                             width: 10,
                             height: 10,
                             borderRadius: 5,
-                            backgroundColor: colors.orange,
+                            backgroundColor: Palette.red,
                         }}
                     />
                 )}

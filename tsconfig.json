@@ -9,6 +9,11 @@
       "@components/*": ["./src/shared/components/*"],
       "@hooks/*": ["./src/shared/hooks/*"],
       "@constants/*": ["./src/shared/constants/*"],
+      "@screens/*": ["./src/screens/*"],
+      "@services/*": ["./src/services/*"],
+      "@stores/*": ["./src/stores/*"],
+      "@types/*": ["./src/types/*"],
+      "@utils/*": ["./src/utils/*"]
     }
   },
   "include": [

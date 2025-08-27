@@ -1,7 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useRef, useState } from "react";
 import { KeyboardTypeOptions, Pressable, StyleSheet, Text, TextInput, TextInputProps, View, } from "react-native";
-import useTheme from "../../hooks/use-theme/use-theme";
 
 interface ITextInputProps extends TextInputProps {
     value: string;
@@ -32,8 +31,7 @@ const Input: React.FC<ITextInputProps> = ({
     ...rest
 }) => {
     const ref = useRef<TextInput>(null);
-    const { colors } = useTheme();
-    const [isFocused, setIsFocused] = useState(false);
+
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
     // Цвета для разных состояний
@@ -41,9 +39,7 @@ const Input: React.FC<ITextInputProps> = ({
         ? '#FC3C3C' // красный
         : isDisabled
             ? '#E1EAF0' // светло-серый
-            : isFocused
-                ? '#FC712C' // оранжевый при фокусе
-                : '#E1EAF0'; // обычный серый
+            : '#E1EAF0'; // обычный серый
 
     const textColor = error
         ? '#FC3C3C'
@@ -54,12 +50,11 @@ const Input: React.FC<ITextInputProps> = ({
     const placeholderTextColor = isDisabled ? '#BFC9D1' : '#8B97A1';
 
     const handleFocus = () => {
-        setIsFocused(true);
         onPress?.();
     };
 
     const handleBlur = () => {
-        setIsFocused(false);
+        // Обработка потери фокуса
     };
 
     const handlePress = () => {

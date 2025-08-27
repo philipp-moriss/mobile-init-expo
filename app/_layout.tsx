@@ -1,35 +1,89 @@
-import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
-import { StatusBar } from "expo-status-bar";
-import "react-native-reanimated";
-
-import { ErrorBoundary } from "@/src/shared/components/ui-kit/error-boundary";
-import { LIGHT } from "@hooks/use-theme/light";
-import { ThemeProvider } from "@hooks/use-theme/use-theme";
+import { ErrorBoundary } from '@components/ui-kit/error-boundary';
+import { Stack, router } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import { useEffect, useState } from 'react';
+import { View } from 'react-native';
+import 'react-native-reanimated';
 
 export default function RootLayout() {
-  const [fontsLoaded, error] = useFonts({
-    "Roboto-Regular": LIGHT.assets.RobotoRegular,
-    GeologicaRegular: LIGHT.assets.RobotoRegular,
-    GeologicaMedium: LIGHT.assets.GeologicaMedium,
-    GeologicaSemiBold: LIGHT.assets.GeologicaSemiBold,
-    GeologicaLight: LIGHT.assets.GeologicaLight,
-  });
+  const [isFirstLaunch, setIsFirstLaunch] = useState<boolean | null>(null);
 
-  if (!fontsLoaded) {
-    // Async font loading only occurs in development.
-    return null;
+  useEffect(() => {
+    // Здесь можно добавить логику проверки первого запуска
+    // Пока что всегда показываем онбординг
+    setIsFirstLaunch(true);
+  }, []);
+
+  useEffect(() => {
+    if (isFirstLaunch === null) return;
+    router.replace(isFirstLaunch ? '/onboarding' : '/home' as any);
+  }, [isFirstLaunch]);
+
+  if (isFirstLaunch === null) {
+    // Показываем загрузочный экран
+    return <View style={{ flex: 1, backgroundColor: '#FAFCFE' }} />;
   }
 
   return (
-    <ThemeProvider>
-      <ErrorBoundary>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-        <StatusBar style="auto" />
-      </ErrorBoundary>
-    </ThemeProvider>
+    <ErrorBoundary>
+      <Stack>
+        <Stack.Screen
+          name="onboarding"
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="auth"
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="registration-city"
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="registration-data"
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="registration-confirm"
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="home"
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="search"
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="favorites"
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="profile"
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen name="+not-found" />
+      </Stack>
+      <StatusBar style="auto" />
+    </ErrorBoundary>
   );
 }
