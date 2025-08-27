@@ -10,12 +10,33 @@ interface AuthStore extends AuthState {
   verifyEmail: (code: string) => Promise<void>;
   setUser: (user: User) => void;
   clearUser: () => void;
+  initialize: () => Promise<void>;
+  setIsFirstEnter: (isFirstEnter: boolean) => void;
 }
 
 export const useAuthStore = create<AuthStore>((set, get) => ({
-  isAuthenticated: false,
+  isAuthenticated: true,
   user: null,
   isLoading: false,
+  isFirstEnter: true,
+
+  initialize: async () => {
+    set({ isLoading: true });
+    try {
+      // Здесь можно добавить проверку токена в AsyncStorage
+      // const token = await AsyncStorage.getItem('authToken');
+      // if (token) {
+      //   const user = await authService.getCurrentUser();
+      //   set({ isAuthenticated: true, user, isLoading: false });
+      // } else {
+      //   set({ isLoading: false });
+      // }
+      set({ isLoading: false });
+    } catch (error) {
+      set({ isLoading: false });
+      console.error('Ошибка инициализации аутентификации:', error);
+    }
+  },
 
   login: async (email: string, password: string) => {
     set({ isLoading: true });
@@ -77,6 +98,10 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       set({ isLoading: false });
       throw error;
     }
+  },
+
+  setIsFirstEnter: (isFirstEnter: boolean) => {
+    set({ isFirstEnter });
   },
 
   setUser: (user: User) => {

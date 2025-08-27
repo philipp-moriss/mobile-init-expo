@@ -42,6 +42,7 @@ export interface Booking {
 export type BookingStatus = 'pending' | 'confirmed' | 'cancelled' | 'completed';
 
 export interface AuthState {
+  isFirstEnter: boolean;
   isAuthenticated: boolean;
   user: User | null;
   isLoading: boolean;

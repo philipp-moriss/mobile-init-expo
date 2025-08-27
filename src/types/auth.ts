@@ -22,6 +22,7 @@ export interface AuthResponse {
     role: 'user' | 'admin' | 'shipowner';
     city: string;
     isVerified: boolean;
+    createdAt: Date;
   };
   token: string;
 }

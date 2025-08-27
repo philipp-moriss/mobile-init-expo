@@ -5,9 +5,10 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 
+import { useAuthStore } from '@/src/stores/auth.store';
 import Button from '@components/ui-kit/button';
 import Icon from '@components/ui-kit/icon';
 import Input from '@components/ui-kit/input';
@@ -19,11 +20,11 @@ const AuthScreen: React.FC = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  
   // Состояния фокуса для инпутов
   const [emailFocused, setEmailFocused] = useState(false);
   const [passwordFocused, setPasswordFocused] = useState(false);
 
+  const { login } = useAuthStore();
   const tabs = [
     { id: 'login', title: 'Вход' },
     { id: 'register', title: 'Регистрация' },
@@ -38,9 +39,7 @@ const AuthScreen: React.FC = () => {
     
     setIsLoading(true);
     try {
-      // Имитация входа
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      router.replace('/home' as any);
+      await login(email, password);
     } catch (error) {
       console.error('Ошибка входа:', error);
     } finally {
@@ -225,6 +224,7 @@ const AuthScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: 60,
   },
   gradientBackground: {
     position: 'absolute',

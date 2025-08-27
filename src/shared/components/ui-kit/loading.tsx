@@ -1,36 +1,34 @@
-import React, { memo } from "react";
-import { ActivityIndicator, Modal, StyleSheet, View } from "react-native";
-import { Primary } from "../../theme";
+import { useTheme } from '@/src/shared/use-theme';
+import React from 'react';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
-type IProps = {
-    visible: boolean;
+interface LoadingProps {
+  size?: 'small' | 'large';
+  color?: string;
+}
+
+const Loading: React.FC<LoadingProps> = ({ 
+  size = 'large', 
+  color 
+}) => {
+  const { colors } = useTheme();
+  
+  return (
+    <View style={styles.container}>
+      <ActivityIndicator 
+        size={size} 
+        color={color || colors.primary} 
+      />
+    </View>
+  );
 };
-const Loading = memo(({visible}: IProps) => {
-    return (
-        <Modal transparent visible={visible}>
-            <View
-                style={{
-                    position: "absolute",
-                    top: 0,
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    width: "100%",
-                    height: "100%",
-                }}
-            />
-            <View style={styles.container}>
-                <ActivityIndicator style={{width: 42, height: 42}} color={Primary.primary500}/>
-            </View>
-        </Modal>
-    );
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
 
-Loading.displayName = "Loading";
-const styles = StyleSheet.create({
-    container: {
-        alignItems: "center",
-        justifyContent: "center",
-    },
-});
 export default Loading;

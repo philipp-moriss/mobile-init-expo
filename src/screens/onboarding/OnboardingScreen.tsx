@@ -1,4 +1,3 @@
-import { router } from 'expo-router';
 import React, { useRef, useState } from 'react';
 import {
   Dimensions,
@@ -10,6 +9,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useTheme } from '@/src/shared/use-theme';
+import { useAuthStore } from '@/src/stores/auth.store';
 import { OnboardingSlide as OnboardingSlideType } from '@/src/types';
 import BackgroundCircles from '@components/ui-kit/background-circles';
 import Button from '@components/ui-kit/button';
@@ -21,6 +21,7 @@ const slideInnerWidth = width;
 
 const OnboardingScreen: React.FC = () => {
   const { colors, fonts, weights, sizes } = useTheme();
+  const { setIsFirstEnter } = useAuthStore();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isProgrammaticScroll, setIsProgrammaticScroll] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
@@ -58,12 +59,12 @@ const OnboardingScreen: React.FC = () => {
         setIsProgrammaticScroll(false);
       }, 300);
     } else {
-      router.replace('/auth');
+      setIsFirstEnter(false);
     }
   };
 
   const handleSkip = () => {
-    router.replace('/auth');
+    setIsFirstEnter(false);
   };
 
   const handleScroll = (event: any) => {
