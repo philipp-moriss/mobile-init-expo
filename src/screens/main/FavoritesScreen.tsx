@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Icons16, Icons24 } from '@constants/Icons';
+
 
 const FavoritesScreen: React.FC = () => {
   const handleBack = () => {
@@ -24,7 +24,7 @@ const FavoritesScreen: React.FC = () => {
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={handleBack} style={styles.backButton}>
-            <Icons16.arrowBack style={styles.backIcon} />
+            <View style={styles.backIcon} />
           </TouchableOpacity>
           
           <Text style={styles.title}>Избранное</Text>
@@ -33,7 +33,7 @@ const FavoritesScreen: React.FC = () => {
         {/* Содержимое */}
         <View style={styles.content}>
           <View style={styles.emptyState}>
-            <Icons24.heart style={styles.heartIcon} />
+            <View style={styles.heartIcon} />
             <Text style={styles.emptyTitle}>Нет избранных клубов</Text>
             <Text style={styles.emptyDescription}>
               Добавляйте клубы в избранное, чтобы быстро находить их

@@ -1,16 +1,14 @@
 import React from 'react';
 import { StyleSheet, Text, TextStyle, TouchableOpacity, ViewStyle } from 'react-native';
-
-import { ButtonSize, ButtonState, ButtonStyles, ButtonType } from '../../constants/Buttons';
-import { Icons20, Icons24 } from '../../constants/Icons';
+import { useTheme } from '../../use-theme';
 
 interface ButtonProps {
   children: React.ReactNode;
   onPress?: () => void;
-  type?: ButtonType;
-  state?: ButtonState;
-  size?: ButtonSize;
-  icon?: keyof typeof Icons24 | keyof typeof Icons20;
+  type?: 'primary' | 'secondary' | 'text';
+  state?: 'default' | 'press' | 'disabled';
+  size?: 'small' | 'base';
+  icon?: string;
   iconPosition?: 'left' | 'right';
   disabled?: boolean;
   style?: ViewStyle;
@@ -31,26 +29,54 @@ const Button: React.FC<ButtonProps> = ({
   containerStyle,
   textStyle,
 }) => {
-  // Получаем стили для выбранного типа и состояния
-  let buttonStyle;
+  const { colors, fonts, weights, sizes } = useTheme();
   
-  if (type === 'text') {
-    // Для Text кнопок используем size как состояние
-    buttonStyle = ButtonStyles.text[size as keyof typeof ButtonStyles.text];
-  } else {
-    // Для остальных кнопок определяем состояние
-    const buttonState: ButtonState = disabled ? 'disabled' : state;
-    buttonStyle = ButtonStyles[type][buttonState];
-  }
+  // Определяем стили кнопки на основе типа и состояния
+  const getButtonStyle = () => {
+    const buttonState = disabled ? 'disabled' : state;
+    
+    if (type === 'primary') {
+      if (buttonState === 'disabled') {
+        return {
+          backgroundColor: colors.grey100,
+          color: colors.grey500,
+        };
+      }
+      return {
+        backgroundColor: colors.primary500,
+        color: colors.white,
+      };
+    }
+    
+    if (type === 'secondary') {
+      if (buttonState === 'disabled') {
+        return {
+          backgroundColor: colors.grey100,
+          color: colors.grey500,
+        };
+      }
+      return {
+        backgroundColor: colors.grey100,
+        color: colors.primary500,
+      };
+    }
+    
+    return {
+      backgroundColor: 'transparent',
+      color: colors.primary500,
+    };
+  };
+  
+  const buttonStyle = getButtonStyle();
   
   // Создаем стили для кнопки
   const buttonStyles = [
     styles.base,
     {
-      ...buttonStyle,
-      paddingVertical: buttonStyle.paddingVertical || 16,
-      paddingHorizontal: buttonStyle.paddingHorizontal || 16,
-      borderRadius: buttonStyle.borderRadius || 16,
+      backgroundColor: buttonStyle.backgroundColor,
+      paddingVertical: size === 'small' ? 8 : 16,
+      paddingHorizontal: 16,
+      borderRadius: size === 'small' ? 100 : 16,
     },
     containerStyle || style,
   ];
@@ -60,10 +86,10 @@ const Button: React.FC<ButtonProps> = ({
     styles.text,
     {
       color: buttonStyle.color,
-      fontSize: buttonStyle.fontSize || 16,
-      lineHeight: buttonStyle.lineHeight || 24,
-      fontWeight: buttonStyle.fontWeight || '600',
-      fontFamily: buttonStyle.fontFamily || 'Onest',
+      fontSize: size === 'small' ? 14 : 16,
+      lineHeight: size === 'small' ? 20 : 24,
+      fontWeight: weights.button,
+      fontFamily: fonts.button,
     },
     textStyle,
   ];
@@ -72,20 +98,7 @@ const Button: React.FC<ButtonProps> = ({
   const renderIcon = (position: 'left' | 'right') => {
     if (!icon || iconPosition !== position) return null;
     
-    if (size === 'small') {
-      // Проверяем, есть ли иконка в Icons20
-      if (icon in Icons20) {
-        const IconComponent = Icons20[icon as keyof typeof Icons20];
-        return IconComponent;
-      }
-    } else {
-      // Проверяем, есть ли иконка в Icons24
-      if (icon in Icons24) {
-        const IconComponent = Icons24[icon as keyof typeof Icons24];
-        return IconComponent;
-      }
-    }
-    
+    // Простой рендер иконки (пока без компонентов)
     return null;
   };
 

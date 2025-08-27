@@ -6,11 +6,6 @@ import {
     ViewStyle,
 } from 'react-native';
 
-import {
-    DotBarStyles,
-    DotState,
-    DotStyles,
-} from '@constants/DotNavigations';
 
 interface DotNavigationProps {
   dots: DotState[];

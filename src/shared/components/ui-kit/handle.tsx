@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, ViewStyle } from 'react-native';
 
-import { HandleStyles } from '@constants/Handles';
 
 interface HandleProps {
   style?: ViewStyle;

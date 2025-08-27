@@ -13,7 +13,7 @@ import { cityService } from '@/src/services/city.service';
 import { City } from '@/src/types';
 import Button from '@components/ui-kit/button';
 import Input from '@components/ui-kit/input';
-import { Icons16 } from '@constants/Icons';
+import { ArrowBackIcon } from '../../shared/components/icons';
 
 const RegistrationCityScreen: React.FC = () => {
   const [selectedCity, setSelectedCity] = useState('');
@@ -75,7 +75,7 @@ const RegistrationCityScreen: React.FC = () => {
         {/* Top Bar */}
         <View style={styles.topBar}>
           <TouchableOpacity onPress={handleBack} style={styles.backButton}>
-            <Icons16.arrowBack style={styles.backIcon} />
+                          <ArrowBackIcon style={styles.backIcon} />
           </TouchableOpacity>
           
           <Text style={styles.title}>Регистрация</Text>

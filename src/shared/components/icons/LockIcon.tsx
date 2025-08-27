@@ -1,28 +1,13 @@
-import React from 'react';
-import { ViewStyle } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
+import React from "react";
+import { SvgXml, XmlProps } from "react-native-svg";
 
-interface LockIconProps {
-  style?: ViewStyle;
-  color?: string;
-  size?: number;
-}
-
-const LockIcon: React.FC<LockIconProps> = ({ 
-  style, 
-  color = '#1A1A1A', 
-  size = 32 
-}) => {
+export const LockIcon = (props: Omit<XmlProps, "xml">) => {
   return (
-    <Svg width={size} height={size} viewBox="0 0 20 20" fill="none" style={style}>
-      <Path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M4.37496 8.37884V6.66667C4.37496 3.56007 6.89336 1.04167 9.99996 1.04167C13.1065 1.04167 15.625 3.56007 15.625 6.66667V8.37884C16.554 8.44825 17.1589 8.62334 17.601 9.06559C18.3333 9.79784 18.3333 10.9763 18.3333 13.3333C18.3333 15.6903 18.3333 16.8688 17.601 17.6011C16.8688 18.3333 15.6903 18.3333 13.3333 18.3333H6.66663C4.3096 18.3333 3.13109 18.3333 2.39886 17.6011C1.66663 16.8688 1.66663 15.6903 1.66663 13.3333C1.66663 10.9763 1.66663 9.79784 2.39886 9.06559C2.84105 8.62334 3.446 8.44825 4.37496 8.37884ZM5.62496 6.66667C5.62496 4.25043 7.58372 2.29167 9.99996 2.29167C12.4162 2.29167 14.375 4.25043 14.375 6.66667V8.33634C14.0558 8.33334 13.7095 8.33334 13.3333 8.33334H6.66663C6.29037 8.33334 5.94413 8.33334 5.62496 8.33634V6.66667ZM11.6666 13.3333C11.6666 14.2538 10.9205 15 9.99996 15C9.07946 15 8.33329 14.2538 8.33329 13.3333C8.33329 12.4128 9.07946 11.6667 9.99996 11.6667C10.9205 11.6667 11.6666 12.4128 11.6666 13.3333Z"
-        fill={color}
-      />
-    </Svg>
+    <SvgXml
+      {...props}
+      xml={`<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M24 12H22V10C22 6.69 19.31 4 16 4S10 6.69 10 10V12H8C6.9 12 6 12.9 6 14V28C6 29.1 6.9 30 8 30H24C25.1 30 26 29.1 26 28V14C26 12.9 25.1 12 24 12ZM16 26C14.9 26 14 25.1 14 24C14 22.9 14.9 22 16 22C17.1 22 18 22.9 18 24C18 25.1 17.1 26 16 26ZM18 12H14V10C14 7.79 15.79 6 18 6C20.21 6 22 7.79 22 10V12H18Z" fill="currentColor"/>
+</svg>`}
+    />
   );
 };
-
-export default LockIcon;

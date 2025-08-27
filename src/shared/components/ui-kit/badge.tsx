@@ -1,24 +1,17 @@
 import React from 'react';
 import {
-    StyleSheet,
-    Text,
-    TextStyle,
-    View,
-    ViewStyle,
+  StyleSheet,
+  Text,
+  TextStyle,
+  View,
+  ViewStyle,
 } from 'react-native';
 
-import {
-    BadgeContainerStyles,
-    BadgeIconStyles,
-    BadgeTextStyles,
-    BadgeType,
-} from '@constants/Badges';
-import { Icons16 } from '@constants/Icons';
 
 interface BadgeProps {
   children: React.ReactNode;
   type?: BadgeType;
-  icon?: keyof typeof Icons16;
+  icon?: React.ComponentType<any>;
   style?: ViewStyle;
   textStyle?: TextStyle;
 }
@@ -36,7 +29,7 @@ const Badge: React.FC<BadgeProps> = ({
   const iconStyleFromType = BadgeIconStyles[type];
 
   // Определяем иконку
-  const IconComponent = icon ? Icons16[icon] : null;
+  const IconComponent = icon;
 
   return (
     <View style={[styles.container, containerStyleFromType, style]}>

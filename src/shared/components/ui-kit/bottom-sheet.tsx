@@ -7,14 +7,6 @@ import {
     ViewStyle,
 } from 'react-native';
 
-import {
-    BottomSheetButtonStyles,
-    BottomSheetButtonTextStyles,
-    BottomSheetContainerStyles,
-    BottomSheetDescriptionStyles,
-    BottomSheetMainBlockStyles,
-    BottomSheetTitleStyles,
-} from '@constants/BottomSheets';
 import Handle from './handle';
 
 interface BottomSheetProps {

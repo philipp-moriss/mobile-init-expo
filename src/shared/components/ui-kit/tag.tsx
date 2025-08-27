@@ -8,11 +8,6 @@ import {
     ViewStyle,
 } from 'react-native';
 
-import {
-    TagContainerStyles,
-    TagState,
-    TagTextStyles,
-} from '@constants/Tags';
 
 interface TagProps {
   children: React.ReactNode;

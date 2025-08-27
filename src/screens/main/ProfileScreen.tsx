@@ -9,7 +9,14 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useAuthStore } from '@/src/stores/auth.store';
-import { Icons16, Icons24 } from '@constants/Icons';
+import {
+    ArrowBackIcon,
+    CalendarIcon,
+    HeartIcon,
+    NotificationIcon,
+    ShipIcon,
+    UserIcon
+} from '../../shared/components/icons';
 
 const ProfileScreen: React.FC = () => {
   const { user, logout } = useAuthStore();
@@ -28,11 +35,11 @@ const ProfileScreen: React.FC = () => {
   };
 
   const menuItems = [
-    { icon: Icons24.user, title: 'Персональные данные', onPress: () => console.log('Персональные данные') },
-    { icon: Icons24.calendar, title: 'Мои брони', onPress: () => console.log('Мои брони') },
-    { icon: Icons24.heart, title: 'Избранное', onPress: () => console.log('Избранное') },
-    { icon: Icons24.notification, title: 'Уведомления', onPress: () => console.log('Уведомления') },
-    { icon: Icons24.ship, title: 'Мои суда', onPress: () => console.log('Мои суда') },
+    { icon: UserIcon, title: 'Персональные данные', onPress: () => console.log('Персональные данные') },
+    { icon: CalendarIcon, title: 'Мои брони', onPress: () => console.log('Мои брони') },
+    { icon: HeartIcon, title: 'Избранное', onPress: () => console.log('Избранное') },
+    { icon: NotificationIcon, title: 'Уведомления', onPress: () => console.log('Уведомления') },
+    { icon: ShipIcon, title: 'Мои суда', onPress: () => console.log('Мои суда') },
   ];
 
   return (
@@ -44,7 +51,7 @@ const ProfileScreen: React.FC = () => {
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={handleBack} style={styles.backButton}>
-            <Icons16.arrowBack style={styles.backIcon} />
+            <ArrowBackIcon style={styles.backIcon} />
           </TouchableOpacity>
           
           <Text style={styles.title}>Профиль</Text>
@@ -84,7 +91,7 @@ const ProfileScreen: React.FC = () => {
                 <item.icon style={styles.menuIcon} />
                 <Text style={styles.menuTitle}>{item.title}</Text>
               </View>
-              <Icons16.arrowBack style={styles.arrowIcon} />
+              <ArrowBackIcon style={styles.arrowIcon} />
             </TouchableOpacity>
           ))}
         </View>

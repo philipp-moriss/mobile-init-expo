@@ -7,14 +7,6 @@ import {
     ViewStyle
 } from 'react-native';
 
-import {
-    BottomBarButtonStyles,
-    BottomBarButtonTextStyles,
-    BottomBarContainerStyles,
-    MainPriceStyles,
-    PriceBlockStyles,
-    SecondaryPriceStyles,
-} from '@constants/BottomBars';
 
 interface BottomBarProps {
   mainPrice: string;

@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { useTheme } from '@/src/shared/use-theme';
 import { OnboardingSlide as OnboardingSlideType } from '@/src/types';
 import BackgroundCircles from '@components/ui-kit/background-circles';
 import Button from '@components/ui-kit/button';
@@ -19,9 +20,12 @@ const { width } = Dimensions.get('window');
 const slideInnerWidth = width;
 
 const OnboardingScreen: React.FC = () => {
+  const { colors, fonts, weights, sizes } = useTheme();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isProgrammaticScroll, setIsProgrammaticScroll] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
+  
+  const styles = getStyles(colors);
 
   const slides: OnboardingSlideType[] = [
     {
@@ -167,10 +171,10 @@ const OnboardingScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAFCFE',
+    backgroundColor: colors.background,
   },
   mainContent: {
     flex: 1,
@@ -209,11 +213,11 @@ const styles = StyleSheet.create({
   welcomeCard: {
     width: 120,
     height: 120,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderRadius: 60,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#1A1A1A',
+    shadowColor: colors.black,
     shadowOffset: { width: 6, height: 6 },
     shadowOpacity: 0.05,
     shadowRadius: 50,
@@ -222,7 +226,7 @@ const styles = StyleSheet.create({
   welcomeIcon: {
     width: 60,
     height: 60,
-    backgroundColor: '#EAF0F6',
+    backgroundColor: colors.grey200,
     borderRadius: 30,
   },
   searchContent: {
@@ -233,11 +237,11 @@ const styles = StyleSheet.create({
   searchImageCard: {
     width: 280,
     height: 200,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderRadius: 24,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#1A1A1A',
+    shadowColor: colors.black,
     shadowOffset: { width: 6, height: 6 },
     shadowOpacity: 0.05,
     shadowRadius: 50,
@@ -256,11 +260,11 @@ const styles = StyleSheet.create({
   servicesCard: {
     width: 120,
     height: 120,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderRadius: 60,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#1A1A1A',
+    shadowColor: colors.black,
     shadowOffset: { width: 6, height: 6 },
     shadowOpacity: 0.05,
     shadowRadius: 50,
@@ -269,7 +273,7 @@ const styles = StyleSheet.create({
   servicesIcon: {
     width: 60,
     height: 60,
-    backgroundColor: '#EAF0F6',
+    backgroundColor: colors.grey200,
     borderRadius: 30,
   },
 });

@@ -1,25 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  Keyboard,
-  StyleSheet,
-  Text,
-  TextInput,
-  TextStyle,
-  View,
-  ViewStyle,
+    Keyboard,
+    StyleSheet,
+    Text,
+    TextInput,
+    TextStyle,
+    View,
+    ViewStyle,
 } from 'react-native';
 
-import {
-  CodeFieldContainerStyles,
-  CodeFieldErrorStyles,
-  CodeFieldErrorTextStyles,
-  CodeFieldInputStyles,
-  CodeFieldPlaceholderStyles,
-  CodeFieldState,
-  CodeFieldTextStyles,
-  CodeFieldWarningIconStyles,
-} from '@constants/CodeFields';
-import { Icons16 } from '@constants/Icons';
 
 interface CodeFieldProps {
   state?: CodeFieldState;
@@ -173,7 +162,7 @@ const CodeField: React.FC<CodeFieldProps> = ({
       <View style={[styles.errorContainer, errorStyleFromState]}>
         {errorMessage && (
           <>
-            <Icons16.warning style={warningIconStyleFromState} />
+            <WarningIcon style={warningIconStyleFromState} />
             <Text style={[styles.errorText, errorTextStyleFromState]}>
               {errorMessage}
             </Text>

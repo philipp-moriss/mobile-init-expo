@@ -9,18 +9,6 @@ import {
     ViewStyle,
 } from 'react-native';
 
-import {
-    AddressStyles,
-    ClubCardContainerStyles,
-    ContentBlockStyles,
-    MainPriceStyles,
-    PhotoBlockStyles,
-    PriceBlockStyles,
-    PriceSuffixStyles,
-    TitleAddressStyles,
-    TitleStyles,
-} from '@constants/ClubCards';
-import { Icons16, Icons20 } from '@constants/Icons';
 
 interface ClubCardProps {
   title: string;
@@ -28,7 +16,7 @@ interface ClubCardProps {
   price: string;
   photo: ImageSourcePropType;
   badgeText?: string;
-  badgeIcon?: keyof typeof Icons16;
+  badgeIcon?: React.ComponentType<any>;
   onHeartPress?: () => void;
   onBookPress?: () => void;
   style?: ViewStyle;
@@ -57,7 +45,7 @@ const ClubCard: React.FC<ClubCardProps> = ({
           {/* Badge */}
           {badgeText && (
             <View style={styles.badgeContainer}>
-              {badgeIcon && React.createElement(Icons16[badgeIcon], { style: styles.badgeIcon })}
+              {badgeIcon && React.createElement(badgeIcon, { style: styles.badgeIcon })}
               <Text style={styles.badgeText}>{badgeText}</Text>
             </View>
           )}
@@ -69,7 +57,7 @@ const ClubCard: React.FC<ClubCardProps> = ({
               onPress={onHeartPress}
               activeOpacity={0.7}
             >
-              <Icons20.heart style={styles.heartIcon} />
+              <HeartIcon style={styles.heartIcon} />
             </TouchableOpacity>
           )}
         </View>

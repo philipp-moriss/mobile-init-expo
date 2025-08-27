@@ -7,16 +7,6 @@ import {
     ViewStyle,
 } from 'react-native';
 
-import {
-    PlansCardContainerStyles,
-    PlansCardDescriptionStyles,
-    PlansCardLeftBlockStyles,
-    PlansCardMainBlockStyles,
-    PlansCardMainPriceStyles,
-    PlansCardPriceBlockStyles,
-    PlansCardPriceSuffixStyles,
-    PlansCardTitleStyles,
-} from '@constants/PlansCards';
 
 interface PlansCardProps {
   title: string;

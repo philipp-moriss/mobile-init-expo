@@ -6,13 +6,6 @@ import {
     ViewStyle,
 } from 'react-native';
 
-import {
-    ServiceCardContainerStyles,
-    ServiceCardMainPriceStyles,
-    ServiceCardPriceBlockStyles,
-    ServiceCardPriceSuffixStyles,
-    ServiceCardTitleStyles,
-} from '@constants/ServiceCards';
 
 interface ServiceCardProps {
   title: string;

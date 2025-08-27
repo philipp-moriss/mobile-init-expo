@@ -14,7 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthStore } from '@/src/stores/auth.store';
 import Button from '@components/ui-kit/button';
 import Input from '@components/ui-kit/input';
-import { Icons16 } from '@constants/Icons';
+import { ArrowBackIcon } from '../../shared/components/icons';
 
 const RegistrationConfirmScreen: React.FC = () => {
   const [code, setCode] = useState('');
@@ -58,7 +58,7 @@ const RegistrationConfirmScreen: React.FC = () => {
           {/* Top Bar */}
           <View style={styles.topBar}>
             <TouchableOpacity onPress={handleBack} style={styles.backButton}>
-              <Icons16.arrowBack style={styles.backIcon} />
+              <ArrowBackIcon style={styles.backIcon} />
             </TouchableOpacity>
             
             <Text style={styles.title}>Регистрация</Text>

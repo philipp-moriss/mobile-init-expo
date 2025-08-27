@@ -1,25 +1,17 @@
 import React from 'react';
 import {
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-    ViewStyle
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ViewStyle
 } from 'react-native';
 
-import { Icons24 } from '@constants/Icons';
-import {
-    TabBarContainerStyles,
-    TabBarIconStyles,
-    TabBarItemStyles,
-    TabBarState,
-    TabBarTextStyles,
-} from '@constants/TabBars';
 
 interface TabBarItem {
   id: string;
   title: string;
-  icon: keyof typeof Icons24;
+  icon: React.ComponentType<any>;
   state?: TabBarState;
 }
 
@@ -49,7 +41,7 @@ const TabBar: React.FC<TabBarProps> = ({
           const isActive = item.id === activeTabId;
           const tabState: TabBarState = isActive ? 'active' : 'default';
           
-          const IconComponent = Icons24[item.icon];
+          const IconComponent = item.icon;
           const itemStyle = TabBarItemStyles[tabState];
           const iconStyle = TabBarIconStyles[tabState];
           const textStyle = TabBarTextStyles[tabState];

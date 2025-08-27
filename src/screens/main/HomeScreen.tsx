@@ -1,17 +1,17 @@
 import { router } from 'expo-router';
 import React from 'react';
 import {
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 import { useAuthStore } from '@/src/stores/auth.store';
-import { Icons16, Icons20, Icons24 } from '@constants/Icons';
+
 
 const HomeScreen: React.FC = () => {
   const { user } = useAuthStore();
@@ -60,11 +60,11 @@ const HomeScreen: React.FC = () => {
             
             <View style={styles.headerActions}>
               <TouchableOpacity onPress={handleNotifications} style={styles.iconButton}>
-                <Icons24.notification style={styles.headerIcon} />
+                <View style={styles.headerIcon} />
               </TouchableOpacity>
               
               <TouchableOpacity onPress={handleProfile} style={styles.iconButton}>
-                <Icons24.user style={styles.headerIcon} />
+                <View style={styles.headerIcon} />
               </TouchableOpacity>
             </View>
           </View>
@@ -72,7 +72,7 @@ const HomeScreen: React.FC = () => {
           {/* Поиск */}
           <TouchableOpacity onPress={handleSearch} style={styles.searchContainer}>
             <View style={styles.searchInput}>
-              <Icons20.search style={styles.searchIcon} />
+              <View style={styles.searchIcon} />
               <Text style={styles.searchPlaceholder}>Поиск клубов, причалов...</Text>
             </View>
           </TouchableOpacity>
@@ -80,9 +80,9 @@ const HomeScreen: React.FC = () => {
           {/* Город */}
           <View style={styles.cityContainer}>
             <TouchableOpacity onPress={handleCityChange} style={styles.cityButton}>
-              <Icons16.mapPoint style={styles.cityIcon} />
+              <View style={styles.cityIcon} />
               <Text style={styles.cityText}>Москва</Text>
-              <Icons16.arrowBack style={styles.cityArrow} />
+              <View style={styles.cityArrow} />
             </TouchableOpacity>
           </View>
         </View>
@@ -148,21 +148,21 @@ const HomeScreen: React.FC = () => {
             <View style={styles.quickActions}>
               <TouchableOpacity style={styles.quickAction} onPress={handleBooking}>
                 <View style={styles.quickActionIcon}>
-                  <Icons24.calendar style={styles.actionIcon} />
+                  <View style={styles.actionIcon} />
                 </View>
                 <Text style={styles.quickActionText}>Бронирование</Text>
               </TouchableOpacity>
 
               <TouchableOpacity style={styles.quickAction} onPress={handleFavorites}>
                 <View style={styles.quickActionIcon}>
-                  <Icons24.heart style={styles.actionIcon} />
+                  <View style={styles.actionIcon} />
                 </View>
                 <Text style={styles.quickActionText}>Избранное</Text>
               </TouchableOpacity>
 
               <TouchableOpacity style={styles.quickAction} onPress={handleSearch}>
                 <View style={styles.quickActionIcon}>
-                  <Icons24.search style={styles.actionIcon} />
+                  <View style={styles.actionIcon} />
                 </View>
                 <Text style={styles.quickActionText}>Поиск</Text>
               </TouchableOpacity>

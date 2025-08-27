@@ -9,11 +9,6 @@ import {
     ViewStyle,
 } from 'react-native';
 
-import {
-    AvatarContainerStyles,
-    AvatarTextStyles,
-    AvatarType,
-} from '@constants/Avatars';
 
 interface AvatarProps {
   type?: AvatarType;

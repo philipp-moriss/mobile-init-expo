@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, ViewStyle } from 'react-native';
 
-import { DividerStyles } from '@constants/Dividers';
 
 interface DividerProps {
   style?: ViewStyle;

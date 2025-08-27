@@ -8,14 +8,12 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-
-import { Icons16, Icons20, Icons24, Icons32 } from '../../constants/Icons';
-import { ClearButtonStyles, InputIconStyles, InputState, InputStyles, InputType, PlaceholderStyles } from '../../constants/Inputs';
+import { useTheme } from '../../use-theme';
 
 interface InputProps extends Omit<TextInputProps, 'style'> {
-  state?: InputState;
-  type?: InputType;
-  icon?: keyof typeof Icons20 | keyof typeof Icons24 | keyof typeof Icons32;
+  state?: 'default' | 'error' | 'success' | 'disabled';
+  type?: 'base' | 'search';
+  icon?: string;
   placeholder?: string;
   value?: string;
   onChangeText?: (text: string) => void;
@@ -48,16 +46,36 @@ const Input: React.FC<InputProps> = ({
   secureTextEntry,
   ...props
 }) => {
+  const { colors, fonts, weights, sizes } = useTheme();
   const [isFocused, setIsFocused] = useState(false);
   
   // Определяем состояние Input
-  const inputState: InputState = disabled ? 'disabled' : state;
+  const inputState = disabled ? 'disabled' : state;
   
-  // Получаем стили для выбранного состояния
-  const inputStyleFromState = InputStyles[inputState];
-  const placeholderStyle = PlaceholderStyles[inputState];
-  const iconStyle = InputIconStyles[inputState];
-  const clearButtonStyle = ClearButtonStyles[inputState];
+  // Получаем стили для выбранного состояния из темы
+  const getInputStyle = () => {
+    if (inputState === 'disabled') {
+      return {
+        backgroundColor: colors.grey100,
+        borderColor: colors.grey200,
+        color: colors.grey500,
+      };
+    }
+    if (inputState === 'error') {
+      return {
+        backgroundColor: colors.white,
+        borderColor: colors.red,
+        color: colors.black,
+      };
+    }
+    return {
+      backgroundColor: colors.white,
+      borderColor: isFocused ? colors.primary500 : colors.grey200,
+      color: colors.black,
+    };
+  };
+  
+  const inputStyleFromState = getInputStyle();
   
   // Обработчики событий
   const handleFocus = () => {
@@ -78,33 +96,16 @@ const Input: React.FC<InputProps> = ({
   // Определяем, нужно ли показывать кнопку очистки
   const shouldShowClear = clearable && value && value.length > 0 && !disabled;
   
-  // Безопасная проверка иконки и определение её размера
-  const getIconComponent = () => {
-    if (!icon) return null;
-    
-    // Проверяем все размеры иконок
-    if (Icons20[icon as keyof typeof Icons20]) {
-      return Icons20[icon as keyof typeof Icons20];
-    }
-    if (Icons24[icon as keyof typeof Icons24]) {
-      return Icons24[icon as keyof typeof Icons24];
-    }
-    if (Icons32[icon as keyof typeof Icons32]) {
-      return Icons32[icon as keyof typeof Icons32];
-    }
-    
-    return null;
-  };
-  
-  const IconComponent = getIconComponent();
+  // Простой рендер иконки (пока без компонентов)
+  const IconComponent = null;
   
   return (
     <View style={[styles.container, containerStyle]}>
       <View style={[styles.inputContainer, inputStyleFromState, style]}>
         {/* Иконка слева */}
-        {IconComponent && (
+        {icon && (
           <View style={styles.iconContainer}>
-            <IconComponent style={iconStyle} />
+            {/* Иконка пока не реализована */}
           </View>
         )}
         
@@ -123,7 +124,7 @@ const Input: React.FC<InputProps> = ({
             }
           ]}
           placeholder={placeholder}
-          placeholderTextColor={placeholderStyle.color}
+          placeholderTextColor={colors.grey500}
           value={value}
           onChangeText={onChangeText}
           onFocus={handleFocus}
@@ -136,11 +137,11 @@ const Input: React.FC<InputProps> = ({
         {/* Кнопка очистки справа */}
         {shouldShowClear && (
           <TouchableOpacity
-            style={[styles.clearButton, clearButtonStyle]}
+            style={[styles.clearButton]}
             onPress={handleClear}
             activeOpacity={0.7}
           >
-            <Icons16.xCircle style={{ color: iconStyle.color, width: 16, height: 16 }} />
+            {/* Иконка очистки пока не реализована */}
           </TouchableOpacity>
         )}
       </View>

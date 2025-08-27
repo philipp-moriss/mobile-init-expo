@@ -5,11 +5,6 @@ import {
     ViewStyle,
 } from 'react-native';
 
-import {
-    MetroMarkColor,
-    MetroMarkContainerStyles,
-    MetroMarkStyles,
-} from '@constants/MetroMarks';
 
 interface MetroMarkProps {
   color: MetroMarkColor;

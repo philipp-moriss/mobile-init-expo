@@ -1,32 +1,13 @@
-import React from 'react';
-import { ViewStyle } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
+import React from "react";
+import { SvgXml, XmlProps } from "react-native-svg";
 
-interface EyeIconProps {
-  style?: ViewStyle;
-  color?: string;
-  size?: number;
-}
-
-const EyeIcon: React.FC<EyeIconProps> = ({ 
-  style, 
-  color = '#1A1A1A', 
-  size = 32 
-}) => {
+export const EyeIcon = (props: Omit<XmlProps, "xml">) => {
   return (
-    <Svg width={size} height={size} viewBox="0 0 20 20" fill="none" style={style}>
-      <Path
-        d="M8.125 10C8.125 8.9645 8.9645 8.125 10 8.125C11.0355 8.125 11.875 8.9645 11.875 10C11.875 11.0355 11.0355 11.875 10 11.875C8.9645 11.875 8.125 11.0355 8.125 10Z"
-        fill={color}
-      />
-      <Path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M1.66663 9.99999C1.66663 11.3662 2.02076 11.8262 2.72903 12.7464C4.14326 14.5837 6.51505 16.6667 9.99996 16.6667C13.4849 16.6667 15.8566 14.5837 17.2709 12.7464C17.9791 11.8262 18.3333 11.3662 18.3333 9.99999C18.3333 8.63383 17.9791 8.17377 17.2709 7.2536C15.8566 5.4163 13.4849 3.33333 9.99996 3.33333C6.51505 3.33333 4.14326 5.4163 2.72903 7.2536C2.02076 8.17377 1.66663 8.63383 1.66663 9.99999ZM9.99996 6.87499C8.27407 6.87499 6.87496 8.2741 6.87496 9.99999C6.87496 11.7259 8.27407 13.125 9.99996 13.125C11.7259 13.125 13.125 11.7259 13.125 9.99999C13.125 8.2741 11.7259 6.87499 9.99996 6.87499Z"
-        fill={color}
-      />
-    </Svg>
+    <SvgXml
+      {...props}
+      xml={`<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M16 8C9.37 8 3.57 12.06 1.43 17.5C3.57 22.94 9.37 27 16 27C22.63 27 28.43 22.94 30.57 17.5C28.43 12.06 22.63 8 16 8ZM16 24C12.69 24 10 21.31 10 18C10 14.69 12.69 12 16 12C19.31 12 22 14.69 22 18C22 21.31 19.31 24 16 24ZM16 14C13.79 14 12 15.79 12 18C12 20.21 13.79 22 16 22C18.21 22 20 20.21 20 18C20 15.79 18.21 14 16 14Z" fill="currentColor"/>
+</svg>`}
+    />
   );
 };
-
-export default EyeIcon;

@@ -1,35 +1,24 @@
 import React from 'react';
 import {
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-    ViewStyle
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ViewStyle
 } from 'react-native';
-
-import { Icons24 } from '@constants/Icons';
-import {
-    NotificationBadgeStyles,
-    TabDescriptionStyles,
-    TabIconStyles,
-    TabItemStyles,
-    TabsContainerStyles,
-    TabState,
-    TabTextStyles,
-    TabType,
-} from '@constants/Tabs';
+import { useTheme } from '../../use-theme';
 
 interface TabItem {
   id: string;
   title: string;
   description?: string;
-  icon?: keyof typeof Icons24;
-  state?: TabState;
+  icon?: string;
+  state?: 'default' | 'active' | 'disabled';
   notificationCount?: number;
 }
 
 interface TabsProps {
-  type?: TabType;
+  type?: 'type1' | 'type2';
   items: TabItem[];
   activeTabId?: string;
   onTabPress?: (tabId: string) => void;
@@ -45,35 +34,55 @@ const Tabs: React.FC<TabsProps> = ({
   style,
   containerStyle,
 }) => {
+  const { colors, fonts, weights, sizes } = useTheme();
+  
   const handleTabPress = (tabId: string) => {
     onTabPress?.(tabId);
   };
 
-  const getTabState = (item: TabItem): TabState => {
+  const getTabState = (item: TabItem): 'default' | 'active' | 'disabled' => {
     if (item.state) return item.state;
     if (item.id === activeTabId) return 'active';
     return 'default';
   };
 
-  const renderTabIcon = (item: TabItem, tabState: TabState) => {
+  const renderTabIcon = (item: TabItem, tabState: 'default' | 'active' | 'disabled') => {
     if (!item.icon) return null;
 
-    const IconComponent = Icons24[item.icon];
-    const iconStyle = TabIconStyles[tabState];
-
     return (
-      <View style={[styles.iconContainer, iconStyle]}>
-        <IconComponent style={styles.icon} />
+      <View style={styles.iconContainer}>
+        {/* Иконка пока не реализована */}
       </View>
     );
+  };
+
+  const getTabItemStyle = (tabState: 'default' | 'active' | 'disabled') => {
+    if (tabState === 'active') {
+      return { backgroundColor: colors.primary500 };
+    }
+    return { backgroundColor: colors.white };
+  };
+
+  const getTabTextStyle = (tabState: 'default' | 'active' | 'disabled') => {
+    if (tabState === 'active') {
+      return { color: colors.white, fontWeight: weights.medium };
+    }
+    return { color: colors.black, fontWeight: weights.normal };
+  };
+
+  const getTabDescriptionStyle = (tabState: 'default' | 'active' | 'disabled') => {
+    if (tabState === 'active') {
+      return { color: colors.white };
+    }
+    return { color: colors.grey500 };
   };
 
   const renderNotificationBadge = (item: TabItem) => {
     if (!item.notificationCount) return null;
 
     return (
-      <View style={styles.notificationBadge}>
-        <Text style={styles.notificationText}>
+      <View style={[styles.notificationBadge, { backgroundColor: colors.red }]}>
+        <Text style={[styles.notificationText, { color: colors.white }]}>
           {item.notificationCount > 99 ? '99+' : item.notificationCount}
         </Text>
       </View>
@@ -82,12 +91,12 @@ const Tabs: React.FC<TabsProps> = ({
 
   return (
     <View style={[styles.container, containerStyle]}>
-      <View style={[styles.tabsContainer, TabsContainerStyles[type], style]}>
+      <View style={[styles.tabsContainer, style]}>
         {items.map((item) => {
           const tabState = getTabState(item);
-          const tabItemStyle = TabItemStyles[tabState];
-          const tabTextStyle = TabTextStyles[tabState];
-          const tabDescriptionStyle = TabDescriptionStyles[tabState];
+          const tabItemStyle = getTabItemStyle(tabState);
+          const tabTextStyle = getTabTextStyle(tabState);
+          const tabDescriptionStyle = getTabDescriptionStyle(tabState);
 
           return (
             <TouchableOpacity
@@ -151,10 +160,15 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   notificationBadge: {
-    ...NotificationBadgeStyles.default,
     position: 'absolute',
     top: 8,
     right: 8,
+    minWidth: 20,
+    height: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 6,
   },
   notificationText: {
     color: '#FFFFFF',

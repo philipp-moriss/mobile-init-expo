@@ -9,7 +9,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import Input from '@components/ui-kit/input';
-import { Icons16, Icons20 } from '@constants/Icons';
+import { ArrowBackIcon, SearchIcon } from '../../shared/components/icons';
 
 const SearchScreen: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -31,7 +31,7 @@ const SearchScreen: React.FC = () => {
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={handleBack} style={styles.backButton}>
-            <Icons16.arrowBack style={styles.backIcon} />
+            <ArrowBackIcon style={styles.backIcon} />
           </TouchableOpacity>
           
           <Text style={styles.title}>Поиск</Text>
@@ -49,7 +49,7 @@ const SearchScreen: React.FC = () => {
               containerStyle={styles.searchInput}
             />
             <TouchableOpacity onPress={handleSearch} style={styles.searchButton}>
-              <Icons20.search style={styles.searchIcon} />
+              <SearchIcon style={styles.searchIcon} />
             </TouchableOpacity>
           </View>
         </View>
