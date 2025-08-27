@@ -1,6 +1,9 @@
 export { EmailIcon } from './EmailIcon';
 export { EyeIcon } from './EyeIcon';
+export { EyeShowIcon } from './EyeShowIcon';
 export { LockIcon } from './LockIcon';
+export { LockKeyIcon } from './LockKeyIcon';
+export { MailIcon } from './MailIcon';
 
 // Новые иконки из Figma
 export { Anchor16Icon } from './Anchor16Icon';

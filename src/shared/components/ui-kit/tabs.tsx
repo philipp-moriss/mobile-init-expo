@@ -18,7 +18,7 @@ interface TabItem {
 }
 
 interface TabsProps {
-  type?: 'type1' | 'type2';
+  type?: 'type1' | 'type2' | 'type3';
   items: TabItem[];
   activeTabId?: string;
   onTabPress?: (tabId: string) => void;
@@ -57,6 +57,13 @@ const Tabs: React.FC<TabsProps> = ({
   };
 
   const getTabItemStyle = (tabState: 'default' | 'active' | 'disabled') => {
+    if (type === 'type3') {
+      if (tabState === 'active') {
+        return { backgroundColor: '#EFF3F8' };
+      }
+      return { backgroundColor: 'transparent' };
+    }
+    
     if (tabState === 'active') {
       return { backgroundColor: colors.primary500 };
     }
@@ -64,6 +71,13 @@ const Tabs: React.FC<TabsProps> = ({
   };
 
   const getTabTextStyle = (tabState: 'default' | 'active' | 'disabled') => {
+    if (type === 'type3') {
+      if (tabState === 'active') {
+        return { color: '#1A1A1A', fontWeight: '500' as any };
+      }
+      return { color: '#A1B0CA', fontWeight: '500' as any };
+    }
+    
     if (tabState === 'active') {
       return { color: colors.white, fontWeight: weights.medium };
     }
@@ -89,9 +103,60 @@ const Tabs: React.FC<TabsProps> = ({
     );
   };
 
+  const getContainerStyle = () => {
+    if (type === 'type3') {
+      return {
+        backgroundColor: '#FFFFFF',
+        borderRadius: 24,
+        padding: 8,
+        shadowColor: '#1A1A1A',
+        shadowOffset: { width: 6, height: 6 },
+        shadowOpacity: 0.05,
+        shadowRadius: 50,
+        elevation: 6,
+      };
+    }
+    return {};
+  };
+
+  const getTabsContainerStyle = () => {
+    if (type === 'type3') {
+      return {
+        flexDirection: 'row' as const,
+        gap: 4,
+      };
+    }
+    return {};
+  };
+
+  const getTabItemStyleForType3 = () => {
+    if (type === 'type3') {
+      return {
+        borderRadius: 16,
+        paddingVertical: 8,
+        paddingHorizontal: 8,
+        justifyContent: 'center' as const,
+        alignItems: 'center' as const,
+      };
+    }
+    return {};
+  };
+
+  const getTabTitleStyleForType3 = () => {
+    if (type === 'type3') {
+      return {
+        fontFamily: 'Inter',
+        fontSize: 14,
+        lineHeight: 20,
+        textAlign: 'center' as const,
+      };
+    }
+    return {};
+  };
+
   return (
-    <View style={[styles.container, containerStyle]}>
-      <View style={[styles.tabsContainer, style]}>
+    <View style={[styles.container, getContainerStyle(), containerStyle]}>
+      <View style={[styles.tabsContainer, getTabsContainerStyle(), style]}>
         {items.map((item) => {
           const tabState = getTabState(item);
           const tabItemStyle = getTabItemStyle(tabState);
@@ -101,7 +166,11 @@ const Tabs: React.FC<TabsProps> = ({
           return (
             <TouchableOpacity
               key={item.id}
-              style={[styles.tabItem, tabItemStyle]}
+              style={[
+                styles.tabItem, 
+                tabItemStyle, 
+                getTabItemStyleForType3()
+              ]}
               onPress={() => handleTabPress(item.id)}
               activeOpacity={0.7}
             >
@@ -109,8 +178,15 @@ const Tabs: React.FC<TabsProps> = ({
               {renderTabIcon(item, tabState)}
               
               {/* Текст и описание */}
-              <View style={styles.textContainer}>
-                <Text style={[styles.tabTitle, tabTextStyle]}>
+              <View style={[
+                styles.textContainer,
+                type === 'type3' && { padding: 4 }
+              ]}>
+                <Text style={[
+                  styles.tabTitle, 
+                  tabTextStyle, 
+                  getTabTitleStyleForType3()
+                ]}>
                   {item.title}
                 </Text>
                 {item.description && (

@@ -2,21 +2,27 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
 import {
+  Dimensions,
   StyleSheet,
   Text,
   TouchableOpacity,
   View
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { ThemeColors, ThemeFonts, ThemeWeights, useTheme } from '@/src/shared/use-theme';
 import { useAuthStore } from '@/src/stores/auth.store';
 import Button from '@components/ui-kit/button';
 import Icon from '@components/ui-kit/icon';
-import Input from '@components/ui-kit/input';
 import Tabs from '@components/ui-kit/tabs';
+import Input from '../../shared/components/ui-kit/input';
 
 const AuthScreen: React.FC = () => {
+  const { colors, sizes, fonts, weights } = useTheme();
+  const { height: screenHeight } = Dimensions.get('window');
+  
   const [activeTab, setActiveTab] = useState<'login' | 'register'>('login');
-  const [email, setEmail] = useState(); 
+  const [email, setEmail] = useState<string>(''); 
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -25,6 +31,12 @@ const AuthScreen: React.FC = () => {
   const [passwordFocused, setPasswordFocused] = useState(false);
 
   const { login } = useAuthStore();
+  
+  // Простая адаптивность
+  const isSmallScreen = screenHeight < 700;
+  
+  const styles = createStyles({ colors, sizes, fonts, weights });
+  
   const tabs = [
     { id: 'login', title: 'Вход' },
     { id: 'register', title: 'Регистрация' },
@@ -59,26 +71,11 @@ const AuthScreen: React.FC = () => {
     console.log('Восстановление пароля');
   };
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
 
-  // Определяем состояние инпута email
-  const getEmailInputState = () => {
-    if (emailFocused) return 'active';
-    if (email && email.length > 0) return 'filled';
-    return 'default';
-  };
 
-  // Определяем состояние инпута пароля
-  const getPasswordInputState = () => {
-    if (passwordFocused) return 'active';
-    if (password && password.length > 0) return 'filled';
-    return 'default';
-  };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       {/* Градиентный фон */}
       <LinearGradient
         colors={['#4ADEDE', '#32C3E4', '#19A7E9', '#28ADEA', '#4BBAEE', '#5DC1F0', '#74CAF2']}
@@ -88,9 +85,16 @@ const AuthScreen: React.FC = () => {
       />
       
       {/* Логотип */}
-      <View style={styles.logoContainer}>
+      <View style={[styles.logoContainer, { 
+        paddingTop: isSmallScreen ? sizes.sm : sizes.m,
+        paddingBottom: isSmallScreen ? sizes.sm : sizes.m 
+      }]}>
         <View style={styles.logoCard}>
-          <Text style={styles.logoText}>Dock Map</Text>
+          <Text style={[styles.logoText, { 
+            fontFamily: fonts.button,
+            fontWeight: weights.bold,
+            color: colors.white 
+          }]}>Dock Map</Text>
         </View>
       </View>
 
@@ -113,52 +117,36 @@ const AuthScreen: React.FC = () => {
           <View style={styles.formContainer}>
             {activeTab === 'login' ? (
               <>
-                {/* Email - с иконкой конверта, как в макете */}
-                <Input
-                  type="mail"
-                  state={getEmailInputState()}
-                  placeholder="Email"
-                  value={email}
-                  onChangeText={setEmail}
-                  icon="email"
-                  containerStyle={styles.inputContainer}
-                  onFocus={() => setEmailFocused(true)}
-                  onBlur={() => setEmailFocused(false)}
-                />
-
-                {/* Пароль - с иконкой замка, как в макете */}
-                <View style={styles.passwordContainer}>
+                {/* Поля ввода */}
+                <View style={styles.inputsContainer}>
+                  {/* Email */}
                   <Input
-                    type="base"
-                    state={getPasswordInputState()}
-                    placeholder="Введите пароль"
-                    value={password}
-                    onChangeText={setPassword}
-                    secureTextEntry={!showPassword}
-                    icon="lock"
-                    containerStyle={styles.passwordInput}
-                    onFocus={() => setPasswordFocused(true)}
-                    onBlur={() => setPasswordFocused(false)}
+                    type="mail"
+                    placeholder="Введите email"
+                    value={email}
+                    onChangeText={setEmail}
                   />
-                  
-                  {/* Кнопка показа/скрытия пароля */}
-                  <TouchableOpacity
-                    style={styles.eyeButton}
-                    onPress={togglePasswordVisibility}
-                  >
-                    <Icon name="eye" size={20} color="#A1B0CA" />
-                  </TouchableOpacity>
-                </View>
 
-                {/* Забыли пароль */}
-                <TouchableOpacity
-                  style={styles.forgotPasswordContainer}
-                  onPress={handleForgotPassword}
-                >
-                  <Text style={styles.forgotPasswordText}>
-                    Забыли пароль?
-                  </Text>
-                </TouchableOpacity>
+                  {/* Пароль и забыли пароль */}
+                  <View style={styles.passwordContainer}>
+                    <Input
+                      type="password"
+                      placeholder="Введите пароль"
+                      value={password}
+                      onChangeText={setPassword}
+                    />
+                    
+                    {/* Забыли пароль */}
+                    <TouchableOpacity
+                      style={styles.forgotPasswordContainer}
+                      onPress={handleForgotPassword}
+                    >
+                      <Text style={styles.forgotPasswordText}>
+                        Забыли пароль?
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
 
                 {/* Кнопка входа */}
                 <Button
@@ -211,20 +199,36 @@ const AuthScreen: React.FC = () => {
             </View>
           </View>
 
-          {/* Пользовательское соглашение */}
-          <Text style={styles.agreementText}>
-            Продолжая вы принимаете условия{'\n'}Пользовательского соглашения{'\n'}и Политики конфиденциальности
-          </Text>
+           {/* Пользовательское соглашение */}
+           <Text style={[styles.agreementText, { 
+             marginTop: isSmallScreen ? sizes.md : 95,
+             fontFamily: fonts.text3,
+             fontWeight: weights.normal,
+             fontSize: 12,
+             lineHeight: 16,
+             color: colors.grey700
+           }]}>
+             Продолжая вы принимаете условия{'\n'}Пользовательского соглашения{'\n'}и Политики конфиденциальности
+           </Text>
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = ({ 
+  colors, 
+  sizes, 
+  fonts, 
+  weights 
+}: {
+  colors: ThemeColors;
+  sizes: any;
+  fonts: ThemeFonts;
+  weights: ThemeWeights;
+}) => StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 60,
   },
   gradientBackground: {
     position: 'absolute',
@@ -236,136 +240,115 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     alignItems: 'center',
-    paddingTop: 60,
-    paddingBottom: 40,
   },
   logoCard: {
     backgroundColor: 'rgba(255, 255, 255, 0.12)',
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.12)',
     borderRadius: 56,
-    paddingHorizontal: 32,
-    paddingVertical: 16,
+    paddingHorizontal: sizes.md,
+    paddingVertical: sizes.sm,
   },
   logoText: {
-    fontFamily: 'Onest',
-    fontWeight: '700',
-    fontSize: 16,
-    lineHeight: 24,
-    color: '#FFFFFF',
+    fontSize: sizes.text2,
+    lineHeight: sizes.m,
   },
   mainContent: {
-    flex: 1, // Растягиваем на всю оставшуюся высоту
-    paddingHorizontal: 0, // Убираем горизонтальные отступы
+    flex: 1, 
+    paddingHorizontal: 0, 
   },
   contentCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 24,
-    padding: 24,
-    shadowColor: '#1A1A1A',
-    shadowOffset: { width: 6, height: 6 },
-    shadowOpacity: 0.05,
-    shadowRadius: 50,
-    elevation: 6,
-    flex: 1, // Растягиваем на всю доступную высоту
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    borderBottomLeftRadius: 0, // Убираем закругление снизу
-    borderBottomRightRadius: 0, // Убираем закругление снизу
+    backgroundColor: colors.background,
+    borderRadius: sizes.md,
+    padding: sizes.m,
+    flex: 1, 
+    borderTopLeftRadius: sizes.md,
+    borderTopRightRadius: sizes.md,
+    borderBottomLeftRadius: 0, 
+    borderBottomRightRadius: 0, 
+    paddingBottom: 34, 
   },
   tabsContainer: {
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: sizes.md,
   },
   tabsWrapper: {
     width: '100%',
   },
   formContainer: {
-    gap: 16,
+    gap: sizes.m,
+  },
+  inputsContainer: {
+    gap: sizes.sm,
+  },
+  passwordContainer: {
+    gap: sizes.s,
   },
   inputContainer: {
     marginBottom: 0,
-  },
-  passwordContainer: {
-    position: 'relative',
-  },
-  passwordInput: {
-    marginBottom: 0,
-    paddingRight: 60, // Место для кнопки глаза
-  },
-  eyeButton: {
-    position: 'absolute',
-    right: 16,
-    top: 18,
-    padding: 8,
   },
   forgotPasswordContainer: {
     alignItems: 'flex-end',
     paddingVertical: 12,
   },
   forgotPasswordText: {
-    fontFamily: 'Onest',
-    fontWeight: '500',
-    fontSize: 14,
+    fontFamily: fonts.text3,
+    fontWeight: weights.medium,
+    fontSize: sizes.text3,
     lineHeight: 20,
-    color: '#008FD2',
+    color: colors.primary600,
   },
   loginButton: {
-    marginTop: 8,
+    marginTop: sizes.s,
   },
   registerButton: {
-    marginTop: 8,
+    marginTop: sizes.s,
   },
   socialContainer: {
-    gap: 24,
+    gap: sizes.md,
+    marginTop: sizes.m,
   },
   dividerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: sizes.s,
   },
   divider: {
     flex: 1,
     height: 1,
-    backgroundColor: '#EAF0F6',
+    backgroundColor: colors.grey200,
   },
   dividerText: {
-    fontFamily: 'Onest',
-    fontWeight: '400',
-    fontSize: 14,
+    fontFamily: fonts.text3,
+    fontWeight: weights.normal,
+    fontSize: sizes.text3,
     lineHeight: 20,
-    color: '#7D8EAA',
+    color: colors.grey700,
   },
   socialButtonsContainer: {
     flexDirection: 'row',
-    gap: 8,
+    gap: sizes.s,
   },
   socialButton: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#EFF3F8',
-    borderRadius: 16,
-    paddingVertical: 16,
-    paddingHorizontal: 24,
-    gap: 8,
+    backgroundColor: colors.grey100,
+    borderRadius: sizes.sm,
+    paddingVertical: sizes.sm,
+    paddingHorizontal: sizes.m,
+    gap: sizes.s,
   },
   socialButtonText: {
-    fontFamily: 'Onest',
-    fontWeight: '500',
-    fontSize: 14,
+    fontFamily: fonts.text3,
+    fontWeight: weights.medium,
+    fontSize: sizes.text3,
     lineHeight: 20,
-    color: '#1A1A1A',
+    color: colors.black,
   },
   agreementText: {
-    fontFamily: 'Onest',
-    fontWeight: '400',
-    fontSize: 12,
-    lineHeight: 16,
-    color: '#7D8EAA',
     textAlign: 'center',
-    marginTop: 8,
   },
 });
 

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {
+  Platform,
   StyleSheet,
   TextInput,
   TextInputProps,
@@ -9,10 +10,11 @@ import {
   ViewStyle,
 } from 'react-native';
 import { useTheme } from '../../use-theme';
+import { EyeIcon, EyeShowIcon, LockKeyIcon, MailIcon, SearchIcon, XCircle20Icon } from '../icons';
 
 interface InputProps extends Omit<TextInputProps, 'style'> {
-  state?: 'default' | 'error' | 'success' | 'disabled';
-  type?: 'base' | 'search';
+  state?: 'default' | 'error' | 'success' | 'disabled' | 'active' | 'filled';
+  type?: 'base' | 'search' | 'mail' | 'password';
   icon?: string;
   placeholder?: string;
   value?: string;
@@ -48,17 +50,26 @@ const Input: React.FC<InputProps> = ({
 }) => {
   const { colors, fonts, weights, sizes } = useTheme();
   const [isFocused, setIsFocused] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   
-  // Определяем состояние Input
-  const inputState = disabled ? 'disabled' : state;
+  // Определяем состояние Input точно по Figma
+  const inputState = disabled ? 'disabled' : (isFocused ? 'active' : state);
   
-  // Получаем стили для выбранного состояния из темы
+  // Определяем свойства в зависимости от типа
+  const isPasswordType = type === 'password';
+  const shouldShowPasswordToggle = isPasswordType;
+  const actualSecureTextEntry = isPasswordType ? !showPassword : secureTextEntry;
+  
+  // Автоматически включаем clearable для определенных типов
+  const shouldBeClearable = clearable || type === 'search' || type === 'mail';
+
   const getInputStyle = () => {
+    // Точные цвета из Figma
     if (inputState === 'disabled') {
       return {
-        backgroundColor: colors.grey100,
-        borderColor: colors.grey200,
-        color: colors.grey500,
+        backgroundColor: colors.grey100, // #EFF3F8
+        borderColor: 'transparent',
+        color: colors.grey500, // #A1B0CA
       };
     }
     if (inputState === 'error') {
@@ -68,13 +79,39 @@ const Input: React.FC<InputProps> = ({
         color: colors.black,
       };
     }
+    if (inputState === 'active') {
+      return {
+        backgroundColor: colors.white, // #FFFFFF
+        borderColor: 'transparent',
+        color: colors.black, // #1A1A1A
+        ...Platform.select({
+          ios: {
+            shadowColor: colors.black,
+            shadowOffset: { width: 6, height: 6 },
+            shadowOpacity: 0.05,
+            shadowRadius: 50,
+          },
+          android: {
+            elevation: 8,
+          },
+        }),
+      };
+    }
+    if (inputState === 'filled') {
+      return {
+        backgroundColor: colors.grey200, // #EAF0F6
+        borderColor: 'transparent',
+        color: colors.black, // #1A1A1A
+      };
+    }
+    // Default state
     return {
-      backgroundColor: colors.white,
-      borderColor: isFocused ? colors.primary500 : colors.grey200,
-      color: colors.black,
+      backgroundColor: colors.grey200, // #EAF0F6
+      borderColor: 'transparent',
+      color: colors.grey500, // #A1B0CA для placeholder
     };
   };
-  
+
   const inputStyleFromState = getInputStyle();
   
   // Обработчики событий
@@ -94,18 +131,35 @@ const Input: React.FC<InputProps> = ({
   };
   
   // Определяем, нужно ли показывать кнопку очистки
-  const shouldShowClear = clearable && value && value.length > 0 && !disabled;
+  const shouldShowClear = shouldBeClearable && value && value.length > 0 && !disabled;
   
-  // Простой рендер иконки (пока без компонентов)
-  const IconComponent = null;
+  // Выбираем иконку в зависимости от типа (точные размеры из Figma)
+  const getLeftIcon = () => {
+    if (icon) return null; // Если передана кастомная иконка
+    
+    switch (type) {
+      case 'mail':
+        return <MailIcon width={20} height={20} color={colors.grey500} />;
+      case 'password':
+        return <LockKeyIcon width={20} height={20} color={colors.grey500} />;
+      case 'search':
+        return <SearchIcon width={20} height={20} color={colors.grey500} />;
+      default:
+        return null;
+    }
+  };
   
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <View style={[styles.container, containerStyle]}>
       <View style={[styles.inputContainer, inputStyleFromState, style]}>
         {/* Иконка слева */}
-        {icon && (
+        {(getLeftIcon() || icon) && (
           <View style={styles.iconContainer}>
-            {/* Иконка пока не реализована */}
+            {getLeftIcon()}
           </View>
         )}
         
@@ -113,37 +167,56 @@ const Input: React.FC<InputProps> = ({
         <TextInput
           style={[
             styles.textInput,
-            inputStyleFromState,
-            inputStyle,
-            // Убираем дублирующиеся стили
             {
-              backgroundColor: 'transparent',
-              borderWidth: 0,
-              paddingVertical: 0,
-              paddingHorizontal: 0,
-            }
+              fontFamily: fonts.text3,
+              fontWeight: weights.normal,
+              fontSize: 16, 
+              lineHeight: 24, 
+              color: inputStyleFromState.color,
+            },
+            inputStyle,
           ]}
           placeholder={placeholder}
-          placeholderTextColor={colors.grey500}
+          placeholderTextColor={colors.grey500} // #A1B0CA
           value={value}
           onChangeText={onChangeText}
           onFocus={handleFocus}
           onBlur={handleBlur}
           editable={!disabled}
-          secureTextEntry={secureTextEntry}
+          secureTextEntry={actualSecureTextEntry}
+          autoCapitalize={type === 'mail' ? 'none' : 'sentences'}
+          keyboardType={type === 'mail' ? 'email-address' : 'default'}
           {...props}
         />
         
-        {/* Кнопка очистки справа */}
-        {shouldShowClear && (
-          <TouchableOpacity
-            style={[styles.clearButton]}
-            onPress={handleClear}
-            activeOpacity={0.7}
-          >
-            {/* Иконка очистки пока не реализована */}
-          </TouchableOpacity>
-        )}
+        {/* Правые кнопки */}
+        <View style={styles.rightButtonsContainer}>
+          {/* Кнопка показа/скрытия пароля */}
+          {shouldShowPasswordToggle && (
+            <TouchableOpacity
+              style={styles.actionButton}
+              onPress={togglePasswordVisibility}
+              activeOpacity={0.7}
+            >
+              {showPassword ? (
+                <EyeIcon width={20} height={20} color={colors.grey500} />
+              ) : (
+                <EyeShowIcon width={20} height={20} color={colors.grey500} />
+              )}
+            </TouchableOpacity>
+          )}
+          
+          {/* Кнопка очистки (16x16 как в Figma) */}
+          {shouldShowClear && (
+            <TouchableOpacity
+              style={styles.clearButton}
+              onPress={handleClear}
+              activeOpacity={0.7}
+            >
+              <XCircle20Icon width={16} height={16} color={colors.grey200} />
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
     </View>
   );
@@ -156,20 +229,40 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
-    minHeight: 56,
+    minHeight: 56, 
+    paddingHorizontal: 16, 
+    borderRadius: 16, 
+    gap: 12, 
   },
   iconContainer: {
     alignItems: 'center',
     justifyContent: 'center',
+    width: 20, 
+    height: 20,
   },
   textInput: {
     flex: 1,
     textAlignVertical: 'center',
+    paddingVertical: 0,
+    margin: 0,
+  },
+  rightButtonsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  actionButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 20,
+    height: 20,
   },
   clearButton: {
     alignItems: 'center',
     justifyContent: 'center',
+    width: 16, 
+    height: 16,
+    padding: 10, 
   },
 });
 
