@@ -1,3 +1,5 @@
+import { Icon } from "@/src/shared/components/ui-kit/icon";
+import { useTheme } from "@/src/shared/use-theme";
 import React, { useState } from "react";
 import {
   Modal,
@@ -6,6 +8,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  ViewStyle,
 } from "react-native";
 import WebView from "react-native-webview";
 
@@ -16,6 +19,20 @@ const TelegramLoginWidget = ({
   user: any;
   onAuth: (user: any) => void;
 }) => {
+  const { colors, sizes, fonts, weights } = useTheme();
+
+  const socialButtonStyle: ViewStyle = {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: colors.grey100,
+    borderRadius: sizes.sm,
+    paddingVertical: sizes.sm,
+    paddingHorizontal: sizes.m,
+    minHeight: 50,
+    gap: sizes.s,
+  };
   const [isLoading, setIsLoading] = useState(false);
   const [webAuthUrl, setWebAuthUrl] = useState<string | null>(null);
   const [showWebView, setShowWebView] = useState(false);
@@ -45,16 +62,16 @@ const TelegramLoginWidget = ({
     <>
       <View style={[styles.container, { opacity: isLoading ? 0 : 1 }]}>
         {!isLoggedIn && !webAuthUrl && (
-          <View style={styles.loggedInContainer}>
-            <TouchableOpacity
-              onPress={() => {
-                setIsLoading(true);
-                fetchWebAuthUrl();
-              }}
-            >
-              <Text style={styles.loggedInText}>Login Telegram</Text>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity
+            style={socialButtonStyle}
+            onPress={() => {
+              setIsLoading(true);
+              fetchWebAuthUrl();
+            }}
+          >
+            <Icon name="telegram" size={24} color="#229ED9" />
+            <Text>Telegram</Text>
+          </TouchableOpacity>
         )}
       </View>
 

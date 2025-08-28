@@ -249,21 +249,6 @@ const AuthScreen: React.FC = () => {
                   console.log(error, "error");
                 }}
               />
-              {/* <TouchableOpacity
-                style={styles.socialButton}
-                onPress={() => handleSocialLogin('telegram')}
-              >
-                <Icon name="telegram" size={24} color="#229ED9" />
-                <Text style={styles.socialButtonText}>Telegram</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.socialButton}
-                onPress={() => handleSocialLogin('vk')}
-              >
-                <Icon name="vk" size={24} color="#0077FF" />
-                <Text style={styles.socialButtonText}>Вконтакте</Text>
-              </TouchableOpacity> */}
             </View>
           </View>
 
@@ -382,6 +367,7 @@ const createStyles = ({
     socialContainer: {
       gap: sizes.md,
       marginTop: sizes.m,
+      alignItems: "center",
     },
     dividerContainer: {
       flexDirection: "row",
@@ -415,13 +401,6 @@ const createStyles = ({
       paddingVertical: sizes.sm,
       paddingHorizontal: sizes.m,
       gap: sizes.s,
-    },
-    socialButtonText: {
-      fontFamily: fonts.text3,
-      fontWeight: weights.medium,
-      fontSize: sizes.text3,
-      lineHeight: 20,
-      color: colors.black,
     },
     agreementText: {
       textAlign: "center",

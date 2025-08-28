@@ -1,8 +1,10 @@
+import { Icon } from "@/src/shared/components/ui-kit/icon";
+import { useTheme } from "@/src/shared/use-theme";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as crypto from "expo-crypto";
 import * as WebBrowser from "expo-web-browser";
 import React, { useCallback, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View, ViewStyle } from "react-native";
 import "react-native-get-random-values";
 
 interface VKAuthConfig {
@@ -197,6 +199,22 @@ const VKAuthWithoutSdk: React.FC<VKAuthWithoutSdkProps> = ({
   onError,
   config,
 }) => {
+
+  const { colors, sizes, fonts, weights } = useTheme();
+
+  const socialButtonStyle: ViewStyle = {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: colors.grey100,
+    borderRadius: sizes.sm,
+    paddingVertical: sizes.sm,
+    paddingHorizontal: sizes.m,
+    minHeight: 50,
+    gap: sizes.s,
+  };
+  
   const [isLoading, setIsLoading] = useState(false);
   const [userInfo, setUserInfo] = useState<VKUserInfo | null>(null);
 
@@ -242,14 +260,12 @@ const VKAuthWithoutSdk: React.FC<VKAuthWithoutSdkProps> = ({
     <View style={styles.container}>
       {!userInfo ? (
         <TouchableOpacity
-          style={[styles.button, isLoading && styles.buttonDisabled]}
-          onPress={handleVKLogin}
-          disabled={isLoading}
-        >
-          <Text style={styles.buttonText}>
-            {isLoading ? "Авторизация..." : "Войти через VK ID"}
-          </Text>
-        </TouchableOpacity>
+        style={socialButtonStyle}
+        onPress={handleVKLogin}
+      >
+        <Icon name="vk" size={24} color="#0077FF" />
+        <Text>Вконтакте</Text>
+      </TouchableOpacity>
       ) : (
         <View style={styles.userContainer}>
           {userInfo && (

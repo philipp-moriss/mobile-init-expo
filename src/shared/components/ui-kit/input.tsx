@@ -115,7 +115,7 @@ const Input: React.FC<InputProps> = ({
   };
   
   // Определяем, нужно ли показывать кнопку очистки
-  const shouldShowClear = shouldBeClearable && value && value.length > 0 && !disabled;
+  const shouldShowClear = shouldBeClearable && value && value.length > 0 && !disabled && isFocused;
   
   // Выбираем иконку в зависимости от типа (точные размеры из Figma)
   const getLeftIcon = () => {
