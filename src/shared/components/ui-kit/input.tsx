@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import {
-  Platform,
   StyleSheet,
   TextInput,
   TextInputProps,
   TextStyle,
   TouchableOpacity,
   View,
-  ViewStyle,
+  ViewStyle
 } from 'react-native';
 import { useTheme } from '../../use-theme';
 import { EyeIcon, EyeShowIcon, LockKeyIcon, MailIcon, SearchIcon, XCircle20Icon } from '../icons';
@@ -52,6 +51,9 @@ const Input: React.FC<InputProps> = ({
   const [isFocused, setIsFocused] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   
+
+  console.log(isFocused,"isFocused");
+  
   // Определяем состояние Input точно по Figma
   const inputState = disabled ? 'disabled' : (isFocused ? 'active' : state);
   
@@ -80,29 +82,14 @@ const Input: React.FC<InputProps> = ({
       };
     }
     if (inputState === 'active') {
-      return {
+
+      const baseStyle = {
         backgroundColor: colors.white, // #FFFFFF
         borderColor: 'transparent',
-        color: colors.black, // #1A1A1A
-        ...Platform.select({
-          ios: {
-            shadowColor: colors.black,
-            shadowOffset: { width: 6, height: 6 },
-            shadowOpacity: 0.05,
-            shadowRadius: 50,
-          },
-          android: {
-            elevation: 8,
-          },
-        }),
-      };
-    }
-    if (inputState === 'filled') {
-      return {
-        backgroundColor: colors.grey200, // #EAF0F6
-        borderColor: 'transparent',
-        color: colors.black, // #1A1A1A
-      };
+        color: colors.black,
+      }
+
+      return baseStyle
     }
     // Default state
     return {
@@ -171,7 +158,6 @@ const Input: React.FC<InputProps> = ({
               fontFamily: fonts.text3,
               fontWeight: weights.normal,
               fontSize: 16, 
-              lineHeight: 24, 
               color: inputStyleFromState.color,
             },
             inputStyle,
