@@ -8,9 +8,9 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { useAuthStore } from '@/src/modules/auth/stores/auth.store';
+import { OnboardingSlideType } from '@/src/shared/types/onboarding';
 import { useTheme } from '@/src/shared/use-theme';
-import { useAuthStore } from '@/src/stores/auth.store';
-import { OnboardingSlide as OnboardingSlideType } from '@/src/types';
 import BackgroundCircles from '@components/ui-kit/background-circles';
 import Button from '@components/ui-kit/button';
 import OnboardingPagination from '@components/ui-kit/onboarding-pagination';

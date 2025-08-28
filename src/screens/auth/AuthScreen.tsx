@@ -11,9 +11,8 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemeColors, ThemeFonts, ThemeWeights, useTheme } from '@/src/shared/use-theme';
-import { useAuthStore } from '@/src/stores/auth.store';
 import Button from '@components/ui-kit/button';
-import Icon from '@components/ui-kit/icon';
+import { Icon } from '@components/ui-kit/icon';
 import Tabs from '@components/ui-kit/tabs';
 import Input from '../../shared/components/ui-kit/input';
 
@@ -24,14 +23,8 @@ const AuthScreen: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'login' | 'register'>('login');
   const [email, setEmail] = useState<string>(''); 
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  // Состояния фокуса для инпутов
-  const [emailFocused, setEmailFocused] = useState(false);
-  const [passwordFocused, setPasswordFocused] = useState(false);
 
-  const { login } = useAuthStore();
-  
   // Простая адаптивность
   const isSmallScreen = screenHeight < 700;
   
@@ -51,7 +44,7 @@ const AuthScreen: React.FC = () => {
     
     setIsLoading(true);
     try {
-      await login(email, password);
+      // await login(email, password);
     } catch (error) {
       console.error('Ошибка входа:', error);
     } finally {

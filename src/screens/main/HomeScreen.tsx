@@ -10,7 +10,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 
-import { useAuthStore } from '@/src/stores/auth.store';
+import { useAuthStore } from '@/src/modules/auth/stores/auth.store';
 
 
 const HomeScreen: React.FC = () => {
@@ -54,7 +54,7 @@ const HomeScreen: React.FC = () => {
         <View style={styles.header}>
           <View style={styles.headerTop}>
             <View style={styles.userInfo}>
-              <Text style={styles.greeting}>Привет, {user?.firstName || 'Гость'}!</Text>
+              <Text style={styles.greeting}>Привет, {user?.name || 'Гость'}!</Text>
               <Text style={styles.subtitle}>Найди свой идеальный причал</Text>
             </View>
             

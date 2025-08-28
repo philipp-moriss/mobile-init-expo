@@ -1,21 +1,22 @@
 import React from 'react';
 import {
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { useAuthStore } from '@/src/stores/auth.store';
+import { useAuthStore } from '@/src/modules/auth/stores/auth.store';
+import { UserRole } from '@/src/shared/api/types/data-contracts';
 import {
-    ArrowBackIcon,
-    CalendarIcon,
-    HeartIcon,
-    NotificationIcon,
-    ShipIcon,
-    UserIcon
+  ArrowBackIcon,
+  CalendarIcon,
+  HeartIcon,
+  NotificationIcon,
+  ShipIcon,
+  UserIcon
 } from '../../shared/components/icons';
 
 const ProfileScreen: React.FC = () => {
@@ -62,19 +63,19 @@ const ProfileScreen: React.FC = () => {
           <View style={styles.avatarContainer}>
             <View style={styles.avatar}>
               <Text style={styles.avatarText}>
-                {user?.firstName?.charAt(0) || 'П'}
+                {user?.name?.charAt(0) || 'П'}
               </Text>
             </View>
           </View>
           
           <View style={styles.userDetails}>
             <Text style={styles.userName}>
-              {user?.firstName} {user?.lastName}
+              {user?.name}
             </Text>
             <Text style={styles.userEmail}>{user?.email}</Text>
             <Text style={styles.userRole}>
-              {user?.role === 'admin' ? 'Администратор' : 
-               user?.role === 'shipowner' ? 'Судовладелец' : 'Пользователь'}
+              {user?.role === UserRole.OWNER ? 'Администратор' : 
+               user?.role === UserRole.MANAGER ? 'Судовладелец' : 'Пользователь'}
             </Text>
           </View>
         </View>

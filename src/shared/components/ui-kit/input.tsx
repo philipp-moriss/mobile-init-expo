@@ -52,9 +52,6 @@ const Input: React.FC<InputProps> = ({
   const [showPassword, setShowPassword] = useState(false);
   
 
-  console.log(isFocused,"isFocused");
-  
-  // Определяем состояние Input точно по Figma
   const inputState = disabled ? 'disabled' : (isFocused ? 'active' : state);
   
   // Определяем свойства в зависимости от типа

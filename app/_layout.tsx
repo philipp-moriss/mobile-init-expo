@@ -3,7 +3,7 @@ import { router, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 
-import { useAuthStore } from "@/src/stores/auth.store";
+import { useAuthStore } from "@/src/modules/auth/stores/auth.store";
 import { useEffect, useState } from "react";
 import { ThemeProvider } from "../src/shared/use-theme";
 
