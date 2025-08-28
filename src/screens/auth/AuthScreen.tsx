@@ -10,6 +10,9 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { useSignInWithEmail } from '@/src/modules/auth/api/use-sign-in-with-email';
+import { useSignUpWithEmail } from '@/src/modules/auth/api/use-sign-up-with-email';
+import { useAuthStore } from '@/src/modules/auth/stores/auth.store';
 import { ThemeColors, ThemeFonts, ThemeWeights, useTheme } from '@/src/shared/use-theme';
 import Button from '@components/ui-kit/button';
 import { Icon } from '@components/ui-kit/icon';
@@ -25,7 +28,11 @@ const AuthScreen: React.FC = () => {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  // Простая адаптивность
+  const { mutateAsync: signUpWithEmail } = useSignUpWithEmail();
+  const { mutateAsync: signInWithEmail } = useSignInWithEmail();
+
+  const { setAuth } = useAuthStore();
+
   const isSmallScreen = screenHeight < 700;
   
   const styles = createStyles({ colors, sizes, fonts, weights });
@@ -41,10 +48,24 @@ const AuthScreen: React.FC = () => {
 
   const handleLogin = async () => {
     if (!email || !password) return;
-    
     setIsLoading(true);
     try {
-      // await login(email, password);
+      signUpWithEmail({
+        email,
+        password,
+        name: email,
+      }).then((res) => {
+        setAuth(res.user);
+      }).catch((err) => {
+        if (err.response.status === 409) {
+          signInWithEmail({
+            email,
+            password,
+          }).then((res) => {
+            setAuth(res.user);
+          })
+        }
+      })
     } catch (error) {
       console.error('Ошибка входа:', error);
     } finally {

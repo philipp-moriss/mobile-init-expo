@@ -11,6 +11,7 @@ export enum AuthProvider {
   SMS = 'sms',
   TELEGRAM = 'telegram',
   VK = 'vk',
+  EMAIL = 'email',
 }
 
 export type IUserDto = {
@@ -31,3 +32,21 @@ export type IUserDto = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+
+export type RegisterEmailDto = {
+  name: string;
+  email: string;
+  password: string;
+}
+
+export type LoginEmailDto = {
+  email: string;
+  password: string;
+}
+
+export type RegisterResponseDto = {
+  accessToken: string;
+  refreshToken: string;
+  user: IUserDto;
+}

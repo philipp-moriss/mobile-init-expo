@@ -1,13 +1,14 @@
 // Store для управления состоянием авторизации
 import { IUserDto } from '@/src/shared/api/types/data-contracts';
 import { AuthState } from '@/src/shared/types/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 
 interface AuthStore extends AuthState {
   logout: () => Promise<void>;
   setUser: (user: IUserDto) => void;
-  initialize: () => Promise<void>;
   setIsFirstEnter: (isFirstEnter: boolean) => void;
+  setAuth: (user: IUserDto) => void;
 }
 
 export const useAuthStore = create<AuthStore>((set, get) => ({
@@ -16,28 +17,11 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
   isLoading: false,
   isFirstEnter: true,
 
-  initialize: async () => {
-    set({ isLoading: true });
-    try {
-      // Здесь можно добавить проверку токена в AsyncStorage
-      // const token = await AsyncStorage.getItem('authToken');
-      // if (token) {
-      //   const user = await authService.getCurrentUser();
-      //   set({ isAuthenticated: true, user, isLoading: false });
-      // } else {
-      //   set({ isLoading: false });
-      // }
-      set({ isLoading: false });
-    } catch (error) {
-      set({ isLoading: false });
-      console.error('Ошибка инициализации аутентификации:', error);
-    }
-  },
-
   logout: async () => {
     set({ isLoading: true });
     try {
-      // await authService.logout();
+      await AsyncStorage.removeItem('token');
+      await AsyncStorage.removeItem('refresh');
       set({
         isAuthenticated: false,
         user: null,
@@ -55,6 +39,10 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
 
   setUser: (user: IUserDto) => {
     set({ user, isAuthenticated: true });
+  },
+
+  setAuth: (user: IUserDto) => {
+    set({ user, isAuthenticated: true, isLoading: false });
   },
 }));
 
