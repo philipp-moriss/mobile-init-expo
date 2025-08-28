@@ -52,7 +52,18 @@ const Input: React.FC<InputProps> = ({
   const [showPassword, setShowPassword] = useState(false);
   
 
-  const inputState = disabled ? 'disabled' : (isFocused ? 'active' : state);
+ 
+  const hasValue = value && value.length > 0;
+  
+  const inputState = disabled 
+    ? 'disabled' 
+    : isFocused 
+      ? 'active' 
+      : (state !== 'default' && state !== 'filled') 
+        ? state 
+        : hasValue 
+          ? 'filled' 
+          : 'default';
   
   // Определяем свойства в зависимости от типа
   const isPasswordType = type === 'password';
@@ -79,20 +90,24 @@ const Input: React.FC<InputProps> = ({
       };
     }
     if (inputState === 'active') {
-
-      const baseStyle = {
+      return {
         backgroundColor: colors.white, // #FFFFFF
         borderColor: 'transparent',
         color: colors.black,
-      }
-
-      return baseStyle
+      };
+    }
+    if (inputState === 'filled') {
+      return {
+        backgroundColor: colors.grey200, 
+        borderColor: 'transparent',
+        color: colors.black,
+      };
     }
     // Default state
     return {
       backgroundColor: colors.grey200, // #EAF0F6
       borderColor: 'transparent',
-      color: colors.grey500, // #A1B0CA для placeholder
+      color: colors.grey500, // #A1B0CA 
     };
   };
 
@@ -114,12 +129,10 @@ const Input: React.FC<InputProps> = ({
     onClear?.();
   };
   
-  // Определяем, нужно ли показывать кнопку очистки
-  const shouldShowClear = shouldBeClearable && value && value.length > 0 && !disabled;
+  const shouldShowClear = shouldBeClearable && value && value.length > 0 && !disabled && inputState !== 'filled';
   
-  // Выбираем иконку в зависимости от типа (точные размеры из Figma)
   const getLeftIcon = () => {
-    if (icon) return null; // Если передана кастомная иконка
+    if (icon) return null; 
     
     switch (type) {
       case 'mail':

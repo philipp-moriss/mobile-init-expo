@@ -78,6 +78,8 @@ const AuthScreen: React.FC = () => {
   };
 
   const handleRegister = () => {
+   
+    (global as any).registrationData = { email, password, name };
     router.push('/registration-city' as any);
   };
 
@@ -368,6 +370,7 @@ const createStyles = ({
   },
   forgotPasswordContainer: {
     alignItems: 'flex-end',
+    alignSelf: 'flex-end',
     paddingVertical: 12,
   },
   forgotPasswordText: {

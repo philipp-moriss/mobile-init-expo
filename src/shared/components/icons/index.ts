@@ -7,6 +7,7 @@ export { MailIcon } from './MailIcon';
 
 // Новые иконки из Figma
 export { Anchor16Icon } from './Anchor16Icon';
+export { default as AnchorGreyIcon } from './AnchorGreyIcon';
 export { AnchorIcon } from './AnchorIcon';
 export { ArrowBackIcon, ArrowBackIcon as ArrowLeftIcon } from './ArrowBackIcon';
 export { Badge10To99Icon } from './Badge10To99Icon';
@@ -37,6 +38,7 @@ export { ScaleMaxIcon } from './ScaleMaxIcon';
 export { ScaleMinIcon } from './ScaleMinIcon';
 export { Search20Icon } from './Search20Icon';
 export { SearchIcon } from './SearchIcon';
+export { default as ShipGradientIcon } from './ShipGradientIcon';
 export { ShipIcon } from './ShipIcon';
 export { TagDefaultIcon } from './TagDefaultIcon';
 export { TagPressIcon } from './TagPressIcon';

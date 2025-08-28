@@ -1,31 +1,61 @@
 import { router } from 'expo-router';
 import React, { useState } from 'react';
 import {
-    KeyboardAvoidingView,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { useSignUpWithEmail } from '@/src/modules/auth/api/use-sign-up-with-email';
+import { useAuthStore } from '@/src/modules/auth/stores/auth.store';
+import { ThemeColors, ThemeFonts, ThemeWeights, useTheme } from '@/src/shared/use-theme';
 import Button from '@components/ui-kit/button';
-import Input from '@components/ui-kit/input';
-import { ArrowBackIcon } from '../../shared/components/icons';
+import { ArrowLeftIcon } from '../../shared/components/icons';
 
 const RegistrationDataScreen: React.FC = () => {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [role, setRole] = useState<'user' | 'admin' | 'shipowner'>('user');
+  const { colors, sizes, fonts, weights } = useTheme();
+  const { setAuth, setIsFirstEnter } = useAuthStore();
+  const { mutateAsync: signUpWithEmail } = useSignUpWithEmail();
+  const [isLoading, setIsLoading] = useState(false);
+  
+  const styles = createStyles({ colors, sizes, fonts, weights });
 
-  const handleContinue = () => {
-    if (firstName && lastName && email && password && confirmPassword && password === confirmPassword) {
-      router.push('/registration-confirm' as any);
+  const handleComplete = async () => {
+    // Получаем данные регистрации из global переменной
+    const registrationData = (global as any).registrationData;
+    
+    if (!registrationData || !registrationData.email || !registrationData.password || !registrationData.name) {
+      console.warn('Данные регистрации неполные');
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      // Отправляем данные на сервер для регистрации
+      const response = await signUpWithEmail({
+        email: registrationData.email,
+        password: registrationData.password,
+        name: registrationData.name,
+      });
+
+      // Устанавливаем пользователя как аутентифицированного
+      setAuth(response.user);
+      
+      // Отмечаем завершение первого входа
+      setIsFirstEnter(false);
+      
+      // Очищаем временные данные
+      delete (global as any).registrationData;
+      
+      // Переходим в защищённые табы
+      router.replace('/(protected-tabs)' as any);
+      
+    } catch (error) {
+      console.error('Ошибка регистрации:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -33,294 +63,151 @@ const RegistrationDataScreen: React.FC = () => {
     router.back();
   };
 
-  const isFormValid = firstName && lastName && email && password && confirmPassword && password === confirmPassword;
-
-  const roles = [
-    { id: 'user', title: 'Пользователь', description: 'Поиск и бронирование причалов' },
-    { id: 'admin', title: 'Администратор', description: 'Управление клубом и причалами' },
-    { id: 'shipowner', title: 'Судовладелец', description: 'Управление судами и услугами' },
-  ];
-
   return (
-    <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView 
-        style={styles.keyboardView}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      >
-        <ScrollView 
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
+    <SafeAreaView style={styles.container} edges={['bottom']}>
+      {/* Top bar */}
+      <View style={styles.topBar}>
+        <View style={styles.topBarContent}>
+          <TouchableOpacity style={styles.backButton} onPress={handleBack}>
+            <ArrowLeftIcon width={24} height={24} color={colors.black} />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Регистрация</Text>
+          <View style={styles.badge}>
+            <Text style={styles.badgeText}>
+              <Text style={styles.badgeTextActive}>3</Text>/3
+            </Text>
+          </View>
+        </View>
+      </View>
+
+      {/* Основной контент */}
+      <View style={styles.content}>
+        <View style={styles.formContainer}>
+          {/* Заголовок и описание */}
+          <View style={styles.headerContainer}>
+            <Text style={styles.title}>Заполните профиль</Text>
+            <Text style={styles.subtitle}>
+              Укажите ваши личные данные{'\n'} для создания аккаунта
+            </Text>
+          </View>
+        </View>
+
+        {/* Кнопка завершения */}
+        <Button
+          type="primary"
+          onPress={handleComplete}
+          containerStyle={styles.completeButton}
+          disabled={isLoading}
         >
-          {/* Top Bar */}
-          <View style={styles.topBar}>
-            <TouchableOpacity onPress={handleBack} style={styles.backButton}>
-              <ArrowBackIcon style={styles.backIcon} />
-            </TouchableOpacity>
-            
-            <Text style={styles.title}>Регистрация</Text>
-            
-            <View style={styles.badge}>
-              <Text style={styles.badgeText}>2/3</Text>
-            </View>
-          </View>
-
-          {/* Основной контент */}
-          <View style={styles.mainContent}>
-            {/* Заголовок и описание */}
-            <View style={styles.headerContainer}>
-              <Text style={styles.headerTitle}>Введите данные</Text>
-              <Text style={styles.headerDescription}>
-                Укажите ваши личные данные для создания аккаунта
-              </Text>
-            </View>
-
-            {/* Форма */}
-            <View style={styles.formContainer}>
-              {/* Имя */}
-              <Input
-                type="base"
-                state="default"
-                placeholder="Имя"
-                value={firstName}
-                onChangeText={setFirstName}
-                containerStyle={styles.inputContainer}
-              />
-
-              {/* Фамилия */}
-              <Input
-                type="base"
-                state="default"
-                placeholder="Фамилия"
-                value={lastName}
-                onChangeText={setLastName}
-                containerStyle={styles.inputContainer}
-              />
-
-              {/* Email */}
-              <Input
-                type="mail"
-                state="default"
-                placeholder="Email"
-                value={email}
-                onChangeText={setEmail}
-                containerStyle={styles.inputContainer}
-              />
-
-              {/* Пароль */}
-              <Input
-                type="base"
-                state="default"
-                placeholder="Пароль"
-                value={password}
-                onChangeText={setPassword}
-                containerStyle={styles.inputContainer}
-              />
-
-              {/* Подтверждение пароля */}
-              <Input
-                type="base"
-                state="default"
-                placeholder="Подтвердите пароль"
-                value={confirmPassword}
-                onChangeText={setConfirmPassword}
-                containerStyle={styles.inputContainer}
-              />
-
-              {/* Выбор роли */}
-              <View style={styles.roleContainer}>
-                <Text style={styles.roleTitle}>Выберите роль</Text>
-                <View style={styles.roleOptions}>
-                  {roles.map((roleOption) => (
-                    <TouchableOpacity
-                      key={roleOption.id}
-                      style={[
-                        styles.roleOption,
-                        role === roleOption.id && styles.roleOptionActive
-                      ]}
-                      onPress={() => setRole(roleOption.id as any)}
-                    >
-                      <View style={styles.roleContent}>
-                        <Text style={[
-                          styles.roleOptionTitle,
-                          role === roleOption.id && styles.roleOptionTitleActive
-                        ]}>
-                          {roleOption.title}
-                        </Text>
-                        <Text style={[
-                          styles.roleOptionDescription,
-                          role === roleOption.id && styles.roleOptionDescriptionActive
-                        ]}>
-                          {roleOption.description}
-                        </Text>
-                      </View>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              </View>
-            </View>
-          </View>
-
-          {/* Кнопка продолжить */}
-          <View style={styles.buttonContainer}>
-            <Button
-              type="primary"
-              onPress={handleContinue}
-              disabled={!isFormValid}
-              containerStyle={styles.continueButton}
-            >
-              Продолжить
-            </Button>
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
+          {isLoading ? 'Регистрация...' : 'Готово'}
+        </Button>
+      </View>
     </SafeAreaView>
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = ({ 
+  colors, 
+  sizes, 
+  fonts, 
+  weights 
+}: {
+  colors: ThemeColors;
+  sizes: any;
+  fonts: ThemeFonts;
+  weights: ThemeWeights;
+}) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAFCFE',
-  },
-  keyboardView: {
-    flex: 1,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    paddingBottom: 34,
+    backgroundColor: colors.background,
   },
   topBar: {
-    backgroundColor: '#FFFFFF',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingTop: 55,
-    paddingBottom: 16,
+    backgroundColor: colors.white,
+    paddingTop: 50,
     borderBottomLeftRadius: 24,
     borderBottomRightRadius: 24,
-    shadowColor: '#1A1A1A',
+    shadowColor: colors.black,
     shadowOffset: { width: 6, height: 6 },
     shadowOpacity: 0.05,
     shadowRadius: 50,
     elevation: 6,
   },
+  topBarContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 16,
+    paddingLeft: 26,
+    paddingRight: 16,
+    position: 'relative',
+    justifyContent: 'space-between',
+  },
   backButton: {
-    padding: 10,
+    padding: 0,
+    zIndex: 1,
   },
-  backIcon: {
-    width: 24,
-    height: 24,
-    color: '#1A1A1A',
-  },
-  title: {
-    fontFamily: 'Onest',
-    fontWeight: '500',
+  headerTitle: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    fontFamily: fonts.text3,
+    fontWeight: weights.medium,
     fontSize: 16,
     lineHeight: 24,
-    letterSpacing: -0.01,
-    color: '#1A1A1A',
+    letterSpacing: -0.5,
+    color: colors.black,
+    textAlign: 'center',
   },
   badge: {
-    backgroundColor: '#EFF3F8',
+    backgroundColor: colors.grey200,
     borderRadius: 100,
     paddingHorizontal: 8,
     paddingVertical: 4,
+    zIndex: 1,
   },
   badgeText: {
-    fontFamily: 'Onest',
-    fontWeight: '500',
+    fontFamily: fonts.text3,
+    fontWeight: weights.medium,
     fontSize: 12,
     lineHeight: 16,
-    color: '#7D8EAA',
+    color: colors.grey500,
   },
-  mainContent: {
-    paddingHorizontal: 16,
+  badgeTextActive: {
+    color: colors.primary500,
+  },
+  content: {
+    flex: 1,
+    justifyContent: 'space-between',
+    paddingHorizontal: 24,
     paddingTop: 24,
+  },
+  formContainer: {
     gap: 24,
   },
   headerContainer: {
     alignItems: 'center',
-    gap: 16,
-    paddingHorizontal: 8,
+    gap: 8,
   },
-  headerTitle: {
-    fontFamily: 'Onest',
-    fontWeight: '500',
+  title: {
+    fontFamily: fonts.h2,
+    fontWeight: weights.h2,
     fontSize: 20,
     lineHeight: 28,
-    letterSpacing: -0.01,
-    color: '#1A1A1A',
+    letterSpacing: -0.5,
+    color: colors.black,
     textAlign: 'center',
   },
-  headerDescription: {
-    fontFamily: 'Onest',
-    fontWeight: '400',
+  subtitle: {
+    fontFamily: fonts.text2,
+    fontWeight: weights.text2,
     fontSize: 16,
     lineHeight: 24,
-    letterSpacing: -0.01,
-    color: '#5A6E8A',
+    letterSpacing: -0.5,
+    color: colors.grey900,
     textAlign: 'center',
   },
-  formContainer: {
-    gap: 16,
-  },
-  inputContainer: {
-    marginBottom: 0,
-  },
-  roleContainer: {
-    gap: 16,
-  },
-  roleTitle: {
-    fontFamily: 'Onest',
-    fontWeight: '500',
-    fontSize: 16,
-    lineHeight: 24,
-    color: '#1A1A1A',
-  },
-  roleOptions: {
-    gap: 12,
-  },
-  roleOption: {
-    backgroundColor: '#F3F3F3',
+  completeButton: {
     borderRadius: 16,
-    padding: 16,
-    borderWidth: 2,
-    borderColor: 'transparent',
-  },
-  roleOptionActive: {
-    backgroundColor: '#EAF0F6',
-    borderColor: '#5A6E8A',
-  },
-  roleContent: {
-    gap: 4,
-  },
-  roleOptionTitle: {
-    fontFamily: 'Onest',
-    fontWeight: '500',
-    fontSize: 16,
-    lineHeight: 24,
-    color: '#5A6E8A',
-  },
-  roleOptionTitleActive: {
-    color: '#1A1A1A',
-  },
-  roleOptionDescription: {
-    fontFamily: 'Onest',
-    fontWeight: '400',
-    fontSize: 14,
-    lineHeight: 20,
-    color: '#7D8EAA',
-  },
-  roleOptionDescriptionActive: {
-    color: '#5A6E8A',
-  },
-  buttonContainer: {
-    paddingHorizontal: 16,
-    marginTop: 32,
-  },
-  continueButton: {
-    width: '100%',
+    paddingVertical: 16,
   },
 });
 

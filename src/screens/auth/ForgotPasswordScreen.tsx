@@ -1,10 +1,10 @@
 import { router } from 'expo-router';
 import React, { useState } from 'react';
 import {
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -111,6 +111,11 @@ const createStyles = ({
     paddingTop: 50,
     borderBottomLeftRadius: 24,
     borderBottomRightRadius: 24,
+    shadowColor: colors.black,
+    shadowOffset: { width: 6, height: 6 },
+    shadowOpacity: 0.05,
+    shadowRadius: 50,
+    elevation: 6,
   },
   topBarContent: {
     flexDirection: 'row',
@@ -164,7 +169,7 @@ const createStyles = ({
     fontSize: 16,
     lineHeight: 24,
     letterSpacing: -0.5,
-    color: colors.grey700,
+    color: colors.grey900,
     textAlign: 'center',
   },
   emailInput: {
