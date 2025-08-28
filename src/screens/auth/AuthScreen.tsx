@@ -1,3 +1,5 @@
+
+import MaskedView from '@react-native-masked-view/masked-view';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
@@ -15,7 +17,7 @@ import { useSignUpWithEmail } from '@/src/modules/auth/api/use-sign-up-with-emai
 import { useAuthStore } from '@/src/modules/auth/stores/auth.store';
 import { ThemeColors, ThemeFonts, ThemeWeights, useTheme } from '@/src/shared/use-theme';
 import Button from '@components/ui-kit/button';
-import { Icon } from '@components/ui-kit/icon';
+import Icon from '@components/ui-kit/icon';
 import Tabs from '@components/ui-kit/tabs';
 import Input from '../../shared/components/ui-kit/input';
 
@@ -26,6 +28,7 @@ const AuthScreen: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'login' | 'register'>('login');
   const [email, setEmail] = useState<string>(''); 
   const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const { mutateAsync: signUpWithEmail } = useSignUpWithEmail();
@@ -54,14 +57,14 @@ const AuthScreen: React.FC = () => {
         email,
         password,
         name: email,
-      }).then((res) => {
+      }).then((res: any) => {
         setAuth(res.user);
-      }).catch((err) => {
+      }).catch((err: any) => {
         if (err.response.status === 409) {
           signInWithEmail({
             email,
             password,
-          }).then((res) => {
+          }).then((res: any) => {
             setAuth(res.user);
           })
         }
@@ -82,7 +85,7 @@ const AuthScreen: React.FC = () => {
   };
 
   const handleForgotPassword = () => {
-    console.log('Восстановление пароля');
+    router.push('/forgot-password' as any);
   };
 
 
@@ -104,11 +107,31 @@ const AuthScreen: React.FC = () => {
         paddingBottom: isSmallScreen ? sizes.sm : sizes.m 
       }]}>
         <View style={styles.logoCard}>
-          <Text style={[styles.logoText, { 
-            fontFamily: fonts.button,
-            fontWeight: weights.bold,
-            color: colors.white 
-          }]}>Dock Map</Text>
+          <MaskedView
+            style={styles.gradientTextContainer}
+            maskElement={
+              <Text style={[styles.logoText, { 
+                fontFamily: fonts.button,
+                backgroundColor: 'transparent',
+              }]}>
+                Dock Map
+              </Text>
+            }
+          >
+            <LinearGradient
+              colors={['#FFFFFF', '#C0EDFF']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0, y: 1 }}
+              style={styles.gradientText}
+            >
+              <Text style={[styles.logoText, { 
+                fontFamily: fonts.button,
+                opacity: 0,
+              }]}>
+                Dock Map
+              </Text>
+            </LinearGradient>
+          </MaskedView>
         </View>
       </View>
 
@@ -174,10 +197,38 @@ const AuthScreen: React.FC = () => {
               </>
             ) : (
               <>
+                {/* Поля ввода для регистрации */}
+                <View style={styles.inputsContainer}>
+                  {/* Имя */}
+                  <Input
+                    type="name"
+                    placeholder="Введите имя"
+                    value={name}
+                    onChangeText={setName}
+                  />
+
+                  {/* Email */}
+                  <Input
+                    type="mail"
+                    placeholder="Введите email"
+                    value={email}
+                    onChangeText={setEmail}
+                  />
+
+                  {/* Пароль */}
+                  <Input
+                    type="password"
+                    placeholder="Введите пароль"
+                    value={password}
+                    onChangeText={setPassword}
+                  />
+                </View>
+
                 {/* Кнопка регистрации */}
                 <Button
                   type="primary"
                   onPress={handleRegister}
+                  disabled={!name || !email || !password || isLoading}
                   containerStyle={styles.registerButton}
                 >
                   Создать аккаунт
@@ -260,12 +311,23 @@ const createStyles = ({
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.12)',
     borderRadius: 56,
-    paddingHorizontal: sizes.md,
-    paddingVertical: sizes.sm,
+    paddingHorizontal: 24,
+    paddingVertical: 16,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   logoText: {
-    fontSize: sizes.text2,
-    lineHeight: sizes.m,
+    fontSize: 16,
+    lineHeight: 24,
+    letterSpacing: -1,
+    fontWeight: '700',
+  },
+  gradientTextContainer: {
+    alignSelf: 'center',
+  },
+  gradientText: {
+    alignSelf: 'center',
   },
   mainContent: {
     flex: 1, 

@@ -8,7 +8,7 @@ export { MailIcon } from './MailIcon';
 // Новые иконки из Figma
 export { Anchor16Icon } from './Anchor16Icon';
 export { AnchorIcon } from './AnchorIcon';
-export { ArrowBackIcon } from './ArrowBackIcon';
+export { ArrowBackIcon, ArrowBackIcon as ArrowLeftIcon } from './ArrowBackIcon';
 export { Badge10To99Icon } from './Badge10To99Icon';
 export { Badge2To9Icon } from './Badge2To9Icon';
 export { BadgeNoneIcon } from './BadgeNoneIcon';
@@ -28,6 +28,7 @@ export { InfoIcon } from './InfoIcon';
 export { MapPointIcon } from './MapPointIcon';
 export { NotificationIcon } from './NotificationIcon';
 export { PassportIcon } from './PassportIcon';
+export { PenIcon } from './PenIcon';
 export { Phone20Icon } from './Phone20Icon';
 export { PhoneIcon } from './PhoneIcon';
 export { ReadAllIcon } from './ReadAllIcon';

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, TextStyle, TouchableOpacity, ViewStyle } from 'react-native';
 import { useTheme } from '../../use-theme';
 
@@ -30,20 +30,27 @@ const Button: React.FC<ButtonProps> = ({
   textStyle,
 }) => {
   const { colors, fonts, weights, sizes } = useTheme();
+  const [isPressed, setIsPressed] = useState(false);
   
   // Определяем стили кнопки на основе типа и состояния
   const getButtonStyle = () => {
-    const buttonState = disabled ? 'disabled' : state;
+    const buttonState = disabled ? 'disabled' : (isPressed ? 'press' : state);
     
     if (type === 'primary') {
       if (buttonState === 'disabled') {
         return {
-          backgroundColor: colors.grey100,
-          color: colors.grey500,
+          backgroundColor: colors.grey100, // #EFF3F8
+          color: colors.grey500, // #A1B0CA
+        };
+      }
+      if (buttonState === 'press') {
+        return {
+          backgroundColor: '#008FD2', 
+          color: colors.white,
         };
       }
       return {
-        backgroundColor: colors.primary500,
+        backgroundColor: colors.primary500, // #19A7E9
         color: colors.white,
       };
     }
@@ -90,6 +97,7 @@ const Button: React.FC<ButtonProps> = ({
       lineHeight: size === 'small' ? 20 : 24,
       fontWeight: weights.button,
       fontFamily: fonts.button,
+      letterSpacing: 0, // Согласно Figma Button: 0px
     },
     textStyle,
   ];
@@ -108,6 +116,8 @@ const Button: React.FC<ButtonProps> = ({
       onPress={onPress}
                 disabled={disabled}
       activeOpacity={0.8}
+      onPressIn={() => setIsPressed(true)}
+      onPressOut={() => setIsPressed(false)}
     >
       {renderIcon('left')}
       

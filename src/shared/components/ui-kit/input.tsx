@@ -9,11 +9,11 @@ import {
   ViewStyle
 } from 'react-native';
 import { useTheme } from '../../use-theme';
-import { EyeIcon, EyeShowIcon, LockKeyIcon, MailIcon, SearchIcon, XCircle20Icon } from '../icons';
+import { EyeIcon, EyeShowIcon, LockKeyIcon, MailIcon, SearchIcon, UserIcon, XCircle20Icon } from '../icons';
 
 interface InputProps extends Omit<TextInputProps, 'style'> {
   state?: 'default' | 'error' | 'success' | 'disabled' | 'active' | 'filled';
-  type?: 'base' | 'search' | 'mail' | 'password';
+  type?: 'base' | 'search' | 'mail' | 'password' | 'name';
   icon?: string;
   placeholder?: string;
   value?: string;
@@ -60,7 +60,7 @@ const Input: React.FC<InputProps> = ({
   const actualSecureTextEntry = isPasswordType ? !showPassword : secureTextEntry;
   
   // Автоматически включаем clearable для определенных типов
-  const shouldBeClearable = clearable || type === 'search' || type === 'mail';
+  const shouldBeClearable = clearable || type === 'search' || type === 'mail' || type === 'name';
 
   const getInputStyle = () => {
     // Точные цвета из Figma
@@ -128,6 +128,8 @@ const Input: React.FC<InputProps> = ({
         return <LockKeyIcon width={20} height={20} color={colors.grey500} />;
       case 'search':
         return <SearchIcon width={20} height={20} color={colors.grey500} />;
+      case 'name':
+        return <UserIcon width={20} height={20} color={colors.grey500} />;
       default:
         return null;
     }

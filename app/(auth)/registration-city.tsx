@@ -10,10 +10,10 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { cityService } from '@/src/services/city.service';
+import { ArrowBackIcon } from '@/src/shared/components/icons';
+import Button from '@/src/shared/components/ui-kit/button';
+import Input from '@/src/shared/components/ui-kit/input';
 import { City } from '@/src/types';
-import Button from '@components/ui-kit/button';
-import Input from '@components/ui-kit/input';
-import { ArrowBackIcon } from '../../shared/components/icons';
 
 const RegistrationCityScreen: React.FC = () => {
   const [selectedCity, setSelectedCity] = useState('');
@@ -285,3 +285,4 @@ const styles = StyleSheet.create({
 });
 
 export default RegistrationCityScreen;
+

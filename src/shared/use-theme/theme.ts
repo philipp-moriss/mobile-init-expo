@@ -39,12 +39,12 @@ export const ASSETS: any = {
 };
 
 export const FONTS: ThemeFonts = {
-  h1: "Onest",
-  h2: "Onest",
-  text1: "Onest",
-  text2: "Onest",
-  text3: "Onest",
-  button: "Onest",
+  h1: "OnestBold", // Heading 1: SemiBold (24px/32px)
+  h2: "OnestMedium", // Heading 2: Medium (20px/28px)  
+  text1: "OnestMedium", // Heading 3: Medium (18px/24px)
+  text2: "OnestRegular", // Body M Regular: Regular (16px/24px)
+  text3: "OnestMedium", // Body M Medium: Medium (16px/24px) 
+  button: "OnestBold", // Button: SemiBold (16px/24px)
 };
 
 export const LINE_HEIGHTS: ThemeLineHeights = {
