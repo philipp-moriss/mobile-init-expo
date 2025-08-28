@@ -20,6 +20,7 @@ import Button from '@components/ui-kit/button';
 import Icon from '@components/ui-kit/icon';
 import Tabs from '@components/ui-kit/tabs';
 import Input from '../../shared/components/ui-kit/input';
+import PrivacyPolicy from '../../shared/components/ui-kit/privacy-policy';
 
 const AuthScreen: React.FC = () => {
   const { colors, sizes, fonts, weights } = useTheme();
@@ -139,142 +140,136 @@ const AuthScreen: React.FC = () => {
       <View style={styles.mainContent}>
         {/* Белая карточка для основного контента */}
         <View style={styles.contentCard}>
-          {/* Табы */}
-          <View style={styles.tabsContainer}>
-            <Tabs
-              type="type3"
-              items={tabs}
-              activeTabId={activeTab}
-              onTabPress={handleTabPress}
-              containerStyle={styles.tabsWrapper}
-            />
-          </View>
+          {/* Основной контент с отступом */}
+          <View style={styles.scrollableContent}>
+            {/* Табы */}
+            <View style={styles.tabsContainer}>
+              <Tabs
+                type="type3"
+                items={tabs}
+                activeTabId={activeTab}
+                onTabPress={handleTabPress}
+                containerStyle={styles.tabsWrapper}
+              />
+            </View>
 
-          {/* Форма */}
-          <View style={styles.formContainer}>
-            {activeTab === 'login' ? (
-              <>
-                {/* Поля ввода */}
-                <View style={styles.inputsContainer}>
-                  {/* Email */}
-                  <Input
-                    type="mail"
-                    placeholder="Введите email"
-                    value={email}
-                    onChangeText={setEmail}
-                  />
+            {/* Форма */}
+            <View style={styles.formContainer}>
+              {activeTab === 'login' ? (
+                <>
+                  {/* Поля ввода */}
+                  <View style={styles.inputsContainer}>
+                    {/* Email */}
+                    <Input
+                      type="mail"
+                      placeholder="Введите email"
+                      value={email}
+                      onChangeText={setEmail}
+                    />
 
-                  {/* Пароль и забыли пароль */}
-                  <View style={styles.passwordContainer}>
+                    {/* Пароль и забыли пароль */}
+                    <View style={styles.passwordContainer}>
+                      <Input
+                        type="password"
+                        placeholder="Введите пароль"
+                        value={password}
+                        onChangeText={setPassword}
+                      />
+                      
+                      {/* Забыли пароль */}
+                      <TouchableOpacity
+                        style={styles.forgotPasswordContainer}
+                        onPress={handleForgotPassword}
+                      >
+                        <Text style={styles.forgotPasswordText}>
+                          Забыли пароль?
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+
+                  {/* Кнопка входа */}
+                  <Button
+                    type="primary"
+                    onPress={handleLogin}
+                    disabled={!email || !password || isLoading}
+                    containerStyle={styles.loginButton}
+                  >
+                    {isLoading ? 'Вход...' : 'Войти'}
+                  </Button>
+                </>
+              ) : (
+                <>
+                  {/* Поля ввода для регистрации */}
+                  <View style={styles.inputsContainer}>
+                    {/* Имя */}
+                    <Input
+                      type="name"
+                      placeholder="Введите имя"
+                      value={name}
+                      onChangeText={setName}
+                    />
+
+                    {/* Email */}
+                    <Input
+                      type="mail"
+                      placeholder="Введите email"
+                      value={email}
+                      onChangeText={setEmail}
+                    />
+
+                    {/* Пароль */}
                     <Input
                       type="password"
                       placeholder="Введите пароль"
                       value={password}
                       onChangeText={setPassword}
                     />
-                    
-                    {/* Забыли пароль */}
-                    <TouchableOpacity
-                      style={styles.forgotPasswordContainer}
-                      onPress={handleForgotPassword}
-                    >
-                      <Text style={styles.forgotPasswordText}>
-                        Забыли пароль?
-                      </Text>
-                    </TouchableOpacity>
                   </View>
-                </View>
 
-                {/* Кнопка входа */}
-                <Button
-                  type="primary"
-                  onPress={handleLogin}
-                  disabled={!email || !password || isLoading}
-                  containerStyle={styles.loginButton}
-                >
-                  {isLoading ? 'Вход...' : 'Войти'}
-                </Button>
-              </>
-            ) : (
-              <>
-                {/* Поля ввода для регистрации */}
-                <View style={styles.inputsContainer}>
-                  {/* Имя */}
-                  <Input
-                    type="name"
-                    placeholder="Введите имя"
-                    value={name}
-                    onChangeText={setName}
-                  />
-
-                  {/* Email */}
-                  <Input
-                    type="mail"
-                    placeholder="Введите email"
-                    value={email}
-                    onChangeText={setEmail}
-                  />
-
-                  {/* Пароль */}
-                  <Input
-                    type="password"
-                    placeholder="Введите пароль"
-                    value={password}
-                    onChangeText={setPassword}
-                  />
-                </View>
-
-                {/* Кнопка регистрации */}
-                <Button
-                  type="primary"
-                  onPress={handleRegister}
-                  disabled={!name || !email || !password || isLoading}
-                  containerStyle={styles.registerButton}
-                >
-                  Создать аккаунт
-                </Button>
-              </>
-            )}
-          </View>
-
-          {/* Социальные сети */}
-          <View style={styles.socialContainer}>
-            <View style={styles.dividerContainer}>
-              <View style={styles.divider} />
-              <Text style={styles.dividerText}>или войти через</Text>
-              <View style={styles.divider} />
+                  {/* Кнопка регистрации */}
+                  <Button
+                    type="primary"
+                    onPress={handleRegister}
+                    disabled={!name || !email || !password || isLoading}
+                    containerStyle={styles.registerButton}
+                  >
+                    Создать аккаунт
+                  </Button>
+                </>
+              )}
             </View>
 
-            <View style={styles.socialButtonsContainer}>
-              <TouchableOpacity
-                style={styles.socialButton}
-                onPress={() => handleSocialLogin('telegram')}
-              >
-                <Icon name="telegram" size={24} color="#229ED9" />
-                <Text style={styles.socialButtonText}>Telegram</Text>
-              </TouchableOpacity>
+            {/* Социальные сети */}
+            <View style={styles.socialContainer}>
+              <View style={styles.dividerContainer}>
+                <View style={styles.divider} />
+                <Text style={styles.dividerText}>или войти через</Text>
+                <View style={styles.divider} />
+              </View>
 
-              <TouchableOpacity
-                style={styles.socialButton}
-                onPress={() => handleSocialLogin('vk')}
-              >
-                <Icon name="vk" size={24} color="#0077FF" />
-                <Text style={styles.socialButtonText}>Вконтакте</Text>
-              </TouchableOpacity>
+              <View style={styles.socialButtonsContainer}>
+                <TouchableOpacity
+                  style={styles.socialButton}
+                  onPress={() => handleSocialLogin('telegram')}
+                >
+                  <Icon name="telegram" size={24} color="#229ED9" />
+                  <Text style={styles.socialButtonText}>Telegram</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.socialButton}
+                  onPress={() => handleSocialLogin('vk')}
+                >
+                  <Icon name="vk" size={24} color="#0077FF" />
+                  <Text style={styles.socialButtonText}>Вконтакте</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
 
-           {/* Пользовательское соглашение */}
-           <Text style={[styles.agreementText, { 
-             marginTop: isSmallScreen ? sizes.md : 95,
-             fontFamily: fonts.text3,
-             fontWeight: weights.normal,
-             fontSize: 12,
-             lineHeight: 16,
-             color: colors.grey700
-           }]}>
-             Продолжая вы принимаете условия{'\n'}Пользовательского соглашения{'\n'}и Политики конфиденциальности
-           </Text>
+          {/* Политика конфиденциальности прижата к низу */}
+          <PrivacyPolicy containerStyle={styles.privacyPolicyContainer} />
         </View>
       </View>
     </SafeAreaView>
@@ -336,13 +331,21 @@ const createStyles = ({
   contentCard: {
     backgroundColor: colors.background,
     borderRadius: sizes.md,
-    padding: sizes.m,
     flex: 1, 
     borderTopLeftRadius: sizes.md,
     borderTopRightRadius: sizes.md,
     borderBottomLeftRadius: 0, 
     borderBottomRightRadius: 0, 
-    paddingBottom: 34, 
+    justifyContent: 'space-between',
+  },
+  scrollableContent: {
+    flex: 1,
+    padding: sizes.m,
+  },
+  privacyPolicyContainer: {
+    marginTop: 0,
+    paddingHorizontal: 0,
+    paddingBottom: 34,
   },
   tabsContainer: {
     alignItems: 'center',
@@ -423,9 +426,7 @@ const createStyles = ({
     lineHeight: 20,
     color: colors.black,
   },
-  agreementText: {
-    textAlign: 'center',
-  },
+
 });
 
 export default AuthScreen;
