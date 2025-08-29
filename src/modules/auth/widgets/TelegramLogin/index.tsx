@@ -58,22 +58,22 @@ const TelegramLoginWidget = ({
     onAuth(data);
   };
 
+  const styles = createStyles({ colors, sizes, fonts, weights });
+
   return (
     <>
-      <View style={[styles.container, { opacity: isLoading ? 0 : 1 }]}>
-        {!isLoggedIn && !webAuthUrl && (
-          <TouchableOpacity
-            style={socialButtonStyle}
-            onPress={() => {
-              setIsLoading(true);
-              fetchWebAuthUrl();
-            }}
-          >
-            <Icon name="telegram" size={24} color="#229ED9" />
-            <Text>Telegram</Text>
-          </TouchableOpacity>
-        )}
-      </View>
+      {!isLoggedIn && !webAuthUrl && (
+        <TouchableOpacity
+          style={[socialButtonStyle, { opacity: isLoading ? 0.6 : 1 }]}
+          onPress={() => {
+            setIsLoading(true);
+            fetchWebAuthUrl();
+          }}
+        >
+          <Icon name="telegram" size={24} color="#229ED9" />
+          <Text style={styles.socialButtonText}>Telegram</Text>
+        </TouchableOpacity>
+      )}
 
       <Modal
         visible={showWebView}
@@ -123,19 +123,23 @@ const TelegramLoginWidget = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    width: 200,
-  },
-  loggedInContainer: {
-    backgroundColor: "black",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  loggedInText: {
-    fontSize: 20,
-    color: "white",
-    fontWeight: "bold",
+const createStyles = ({
+  colors,
+  sizes,
+  fonts,
+  weights,
+}: {
+  colors: any;
+  sizes: any;
+  fonts: any;
+  weights: any;
+}) => StyleSheet.create({
+  socialButtonText: {
+    fontFamily: fonts.text3,
+    fontWeight: weights.medium,
+    fontSize: sizes.text3,
+    lineHeight: 20,
+    color: colors.black,
   },
   modalContainer: {
     flex: 1,

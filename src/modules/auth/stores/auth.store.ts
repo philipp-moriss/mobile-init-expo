@@ -22,7 +22,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
 
   setIsInitialized: () => {
     getStorageIsFirstEnter().then((isFirstEnter) => {
-      set({ isInitialized: true, isFirstEnter: isFirstEnter !== 'true' });
+      set({ isInitialized: true, isFirstEnter: isFirstEnter !== 'false' });
     });
   },
 

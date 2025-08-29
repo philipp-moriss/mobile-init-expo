@@ -256,16 +256,18 @@ const VKAuthWithoutSdk: React.FC<VKAuthWithoutSdkProps> = ({
     }
   }, [config, onSuccess, onError]);
 
+  const styles = createStyles({ colors, sizes, fonts, weights });
+
   return (
-    <View style={styles.container}>
+    <>
       {!userInfo ? (
         <TouchableOpacity
-        style={socialButtonStyle}
-        onPress={handleVKLogin}
-      >
-        <Icon name="vk" size={24} color="#0077FF" />
-        <Text>Вконтакте</Text>
-      </TouchableOpacity>
+          style={socialButtonStyle}
+          onPress={handleVKLogin}
+        >
+          <Icon name="vk" size={24} color="#0077FF" />
+          <Text style={styles.socialButtonText}>Вконтакте</Text>
+        </TouchableOpacity>
       ) : (
         <View style={styles.userContainer}>
           {userInfo && (
@@ -278,33 +280,27 @@ const VKAuthWithoutSdk: React.FC<VKAuthWithoutSdkProps> = ({
           )}
         </View>
       )}
-    </View>
+    </>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    minWidth: 200,
-    // width: "100%",
-    // padding: 20,
-    // justifyContent: "center",
-    // alignItems: "center",
-  },
-  button: {
-    backgroundColor: "#4C75A3",
-    paddingHorizontal: 30,
-    paddingVertical: 15,
-    borderRadius: 8,
-    marginBottom: 20,
-  },
-  buttonDisabled: {
-    opacity: 0.6,
-  },
-  buttonText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
+const createStyles = ({
+  colors,
+  sizes,
+  fonts,
+  weights,
+}: {
+  colors: any;
+  sizes: any;
+  fonts: any;
+  weights: any;
+}) => StyleSheet.create({
+  socialButtonText: {
+    fontFamily: fonts.text3,
+    fontWeight: weights.medium,
+    fontSize: sizes.text3,
+    lineHeight: 20,
+    color: colors.black,
   },
   userContainer: {
     width: "100%",
