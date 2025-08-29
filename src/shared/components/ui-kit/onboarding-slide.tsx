@@ -1,11 +1,13 @@
 import React from 'react';
 import {
-    StyleSheet,
-    Text,
-    TextStyle,
-    View,
-    ViewStyle,
+  StyleSheet,
+  Text,
+  TextStyle,
+  View,
+  ViewStyle,
 } from 'react-native';
+
+import { useTheme } from '@/src/shared/use-theme';
 
 interface OnboardingSlideProps {
   title: string;
@@ -26,6 +28,9 @@ const OnboardingSlide: React.FC<OnboardingSlideProps> = ({
   titleStyle,
   descriptionStyle,
 }) => {
+  const { colors, fonts, weights } = useTheme();
+  const styles = getStyles(colors, fonts, weights);
+  
   return (
     <View style={[styles.container, style]}>
       {/* Верхняя секция: карточка */}
@@ -33,14 +38,14 @@ const OnboardingSlide: React.FC<OnboardingSlideProps> = ({
         <View style={styles.content}>
           {children}
         </View>
+        
+        {/* Пагинация сразу после карточки */}
+        {pagination && (
+          <View style={styles.paginationWrapper}>
+            {pagination}
+          </View>
+        )}
       </View>
-      
-      {/* Пагинация между карточкой и текстом */}
-      {pagination && (
-        <View style={styles.paginationWrapper}>
-          {pagination}
-        </View>
-      )}
       
       {/* Текстовая информация */}
       <View style={styles.textContainer}>
@@ -55,29 +60,27 @@ const OnboardingSlide: React.FC<OnboardingSlideProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (colors: any, fonts: any, weights: any) => StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 24,
-    paddingHorizontal: 24,
+    overflow: 'visible',
   },
   topSection: {
     alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
+    justifyContent: 'flex-start',
     width: '100%',
-    paddingTop: 24,
+    paddingTop: 40,
   },
   content: {
     alignItems: 'center',
     justifyContent: 'center',
     width: 327,
     height: 400,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderRadius: 40,
-    shadowColor: '#1A1A1A',
+    shadowColor: colors.black,
     shadowOffset: { width: 6, height: 6 },
     shadowOpacity: 0.05,
     shadowRadius: 50,
@@ -86,32 +89,31 @@ const styles = StyleSheet.create({
   },
   paginationWrapper: {
     alignItems: 'center',
-    marginVertical: 16,
+    marginTop: 8,
   },
   textContainer: {
     alignItems: 'center',
     alignSelf: 'stretch',
     gap: 8,
-    paddingHorizontal: 0,
-    paddingBottom: 24,
+    marginBottom: 24,
   },
   title: {
-    fontFamily: 'Onest',
-    fontWeight: '500',
+    fontFamily: fonts.h2,
+    fontWeight: weights.medium,
     fontSize: 20,
     lineHeight: 28,
     letterSpacing: -0.5,
     textAlign: 'center',
-    color: '#1A1A1A',
+    color: colors.black,
   },
   description: {
-    fontFamily: 'Onest',
-    fontWeight: '400',
+    fontFamily: fonts.text2,
+    fontWeight: weights.text2,
     fontSize: 16,
     lineHeight: 24,
     letterSpacing: -0.5,
     textAlign: 'center',
-    color: '#5A6E8A',
+    color: colors.grey900,
     opacity: 0.8,
   },
 });

@@ -1,3 +1,4 @@
+import { BlurView } from 'expo-blur';
 import React from 'react';
 import { StyleSheet, View, ViewStyle } from 'react-native';
 
@@ -19,7 +20,7 @@ const BackgroundCircles: React.FC<BackgroundCirclesProps> = ({
           top: 94,
           width: 440,
           height: 440,
-          backgroundColor: '#C0EDFF',
+          backgroundColor: 'rgba(192, 237, 255, 0.3)',
         };
       case 'search':
         return {
@@ -28,7 +29,7 @@ const BackgroundCircles: React.FC<BackgroundCirclesProps> = ({
           top: -20,
           width: 440,
           height: 440,
-          backgroundColor: 'rgba(25, 167, 233, 0.12)',
+          backgroundColor: 'rgba(25, 167, 233, 0.15)',
         };
       case 'services':
         return {
@@ -37,7 +38,7 @@ const BackgroundCircles: React.FC<BackgroundCirclesProps> = ({
           top: 120,
           width: 440,
           height: 440,
-          backgroundColor: '#C0EDFF',
+          backgroundColor: 'rgba(192, 237, 255, 0.3)',
         };
       default:
         return {};
@@ -47,6 +48,11 @@ const BackgroundCircles: React.FC<BackgroundCirclesProps> = ({
   return (
     <View style={[styles.container, style]}>
       <View style={[styles.circle, getCircleStyle()]} />
+      <BlurView 
+        intensity={100} 
+        tint="light"
+        style={[styles.blurOverlay, getCircleStyle()]} 
+      />
     </View>
   );
 };
@@ -58,12 +64,19 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    overflow: 'hidden',
+
   },
   circle: {
     borderRadius: 220,
+    shadowColor: '#19A7E9',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 150,
+    elevation: 0,
+  },
+  blurOverlay: {
+    borderRadius: 220,
     opacity: 0.6,
-    filter: 'blur(100px)',
   },
 });
 

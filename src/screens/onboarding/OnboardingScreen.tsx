@@ -39,13 +39,13 @@ const OnboardingScreen: React.FC = () => {
     {
       id: 2,
       title: 'Мгновенный поиск швартовок',
-      description: 'Выбирайте клуб по карте, проверяйте доступные места и бронируйте причал в пару кликов',
+      description: 'Выбирайте клуб по карте, проверяйте\n доступные места и бронируйте причал\n в пару кликов',
       image: 'search',
     },
     {
       id: 3,
       title: 'Управление услугами',
-      description: 'От построения интерактивной карты причала до управления бронированиями и расписанием',
+      description: 'От построения интерактивной карты\n причала до управления бронированиями\n и расписанием',
       image: 'services',
     },
   ];
@@ -81,43 +81,34 @@ const OnboardingScreen: React.FC = () => {
   const renderSlideContent = (slide: OnboardingSlideType) => {
     switch (slide.image) {
       case 'welcome':
-        return (
-          <View style={styles.welcomeContent}>
-            <BackgroundCircles variant="welcome" />
-            <View style={styles.welcomeCard}>
-              <View style={styles.welcomeIcon} />
-            </View>
-          </View>
-        );
+        return null;
       case 'search':
         return (
-          <View style={styles.searchContent}>
-            <BackgroundCircles variant="search" />
-            <View style={styles.searchImageCard}>
-              <Image
-                source={require('@/assets/images/onboarding-slide-2.png')}
-                style={styles.searchImage}
-              />
-            </View>
-          </View>
+          <Image
+            source={require('@/assets/images/onboarding-slide-2.png')}
+            style={styles.searchImage}
+          />
         );
       case 'services':
-        return (
-          <View style={styles.servicesContent}>
-            <BackgroundCircles variant="services" />
-            <View style={styles.servicesCard}>
-              <View style={styles.servicesIcon} />
-            </View>
-          </View>
-        );
+        return null;
       default:
         return null;
     }
   };
 
+  const renderBackgroundCircles = (slide: OnboardingSlideType) => {
+    return <BackgroundCircles variant={slide.image as any} />;
+  };
+
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.mainContent}>
+    <View style={styles.fullScreenContainer}>
+      {/* Фоновые круги для текущего слайда */}
+      <View style={styles.backgroundContainer}>
+        {renderBackgroundCircles(slides[currentSlide])}
+      </View>
+      
+      <SafeAreaView style={styles.container}>
+        <View style={styles.mainContent}>
         <ScrollView
           ref={scrollViewRef}
           horizontal
@@ -171,30 +162,45 @@ const OnboardingScreen: React.FC = () => {
           </View>
         </View>
       </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </View>
   );
 };
 
 const getStyles = (colors: any) => StyleSheet.create({
-  container: {
+  fullScreenContainer: {
     flex: 1,
     backgroundColor: colors.background,
+  },
+  container: {
+    flex: 1,
+    backgroundColor: 'transparent',
   },
   mainContent: {
     flex: 1,
     justifyContent: 'space-between',
+    overflow: 'visible',
   },
   scrollView: {
     flex: 1,
+    overflow: 'visible',
+  },
+  backgroundContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 0,
   },
   slide: {
     alignItems: 'center',
     justifyContent: 'center',
+    position: 'relative',
+    zIndex: 1,
   },
   bottomSection: {
-    paddingHorizontal: 16,
-    paddingBottom: 34,
-    gap: 24,
+    paddingHorizontal: 24,
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -209,77 +215,15 @@ const getStyles = (colors: any) => StyleSheet.create({
   startButton: {
     flex: 1,
   },
-  welcomeContent: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: slideInnerWidth,
-  },
-  welcomeCard: {
-    width: 120,
-    height: 120,
-    backgroundColor: colors.white,
-    borderRadius: 60,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: colors.black,
-    shadowOffset: { width: 6, height: 6 },
-    shadowOpacity: 0.05,
-    shadowRadius: 50,
-    elevation: 6,
-  },
-  welcomeIcon: {
-    width: 60,
-    height: 60,
-    backgroundColor: colors.grey200,
-    borderRadius: 30,
-  },
-  searchContent: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: slideInnerWidth,
-  },
-  searchImageCard: {
-    width: 280,
-    height: 200,
-    backgroundColor: colors.white,
-    borderRadius: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: colors.black,
-    shadowOffset: { width: 6, height: 6 },
-    shadowOpacity: 0.05,
-    shadowRadius: 50,
-    elevation: 6,
-  },
+
+
   searchImage: {
-    width: 260,
-    height: 180,
-    borderRadius: 16,
+    width: 327,
+    height: 400,
+    borderRadius: 40,
   },
-  servicesContent: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: slideInnerWidth,
-  },
-  servicesCard: {
-    width: 120,
-    height: 120,
-    backgroundColor: colors.white,
-    borderRadius: 60,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: colors.black,
-    shadowOffset: { width: 6, height: 6 },
-    shadowOpacity: 0.05,
-    shadowRadius: 50,
-    elevation: 6,
-  },
-  servicesIcon: {
-    width: 60,
-    height: 60,
-    backgroundColor: colors.grey200,
-    borderRadius: 30,
-  },
+
+
 });
 
 export default OnboardingScreen;
