@@ -9,6 +9,7 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
+      "scheme": "dockmap",
       "supportsTablet": true,
       "bundleIdentifier": "com.sosmobile.mobile"
     },

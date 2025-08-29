@@ -1,53 +1,66 @@
 
 import MaskedView from '@react-native-masked-view/masked-view';
-import { LinearGradient } from 'expo-linear-gradient';
-import { router } from 'expo-router';
-import React, { useState } from 'react';
+import { LinearGradient } from "expo-linear-gradient";
+import { router } from "expo-router";
+import React, { useState } from "react";
 import {
   Dimensions,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-import { useSignInWithEmail } from '@/src/modules/auth/api/use-sign-in-with-email';
-import { useSignUpWithEmail } from '@/src/modules/auth/api/use-sign-up-with-email';
-import { useAuthStore } from '@/src/modules/auth/stores/auth.store';
-import { ThemeColors, ThemeFonts, ThemeWeights, useTheme } from '@/src/shared/use-theme';
-import Button from '@components/ui-kit/button';
-import Icon from '@components/ui-kit/icon';
-import Tabs from '@components/ui-kit/tabs';
-import Input from '../../shared/components/ui-kit/input';
-import PrivacyPolicy from '../../shared/components/ui-kit/privacy-policy';
+import { useSignInWithEmail } from "@/src/modules/auth/api/use-sign-in-with-email";
+import { useSignUpWithEmail } from "@/src/modules/auth/api/use-sign-up-with-email";
+import { useAuthStore } from "@/src/modules/auth/stores/auth.store";
+import TelegramLoginWidget from "@/src/modules/auth/widgets/TelegramLogin";
+import VKAuthWithoutSdk from "@/src/modules/auth/widgets/VkLoginWithoutSdk";
+import { RegisterResponseDto } from "@/src/shared/api/types/data-contracts";
+import {
+  ThemeColors,
+  ThemeFonts,
+  ThemeWeights,
+  useTheme,
+} from "@/src/shared/use-theme";
+import Button from "@components/ui-kit/button";
+import Tabs from "@components/ui-kit/tabs";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Input from "../../shared/components/ui-kit/input";
 
 const AuthScreen: React.FC = () => {
   const { colors, sizes, fonts, weights } = useTheme();
-  const { height: screenHeight } = Dimensions.get('window');
-  
-  const [activeTab, setActiveTab] = useState<'login' | 'register'>('login');
-  const [email, setEmail] = useState<string>(''); 
-  const [password, setPassword] = useState('');
+  const { height: screenHeight } = Dimensions.get("window");
+
+  const [activeTab, setActiveTab] = useState<"login" | "register">("login");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState("");
   const [name, setName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const { mutateAsync: signUpWithEmail } = useSignUpWithEmail();
   const { mutateAsync: signInWithEmail } = useSignInWithEmail();
 
-  const { setAuth } = useAuthStore();
+  const { setAuth, user } = useAuthStore();
 
   const isSmallScreen = screenHeight < 700;
-  
+
+  const initSocialAuth = async (data: RegisterResponseDto) => {
+    setAuth(data.user);
+    await AsyncStorage.setItem("token", data.accessToken);
+    await AsyncStorage.setItem("refreshToken", data.refreshToken);
+  };
+
   const styles = createStyles({ colors, sizes, fonts, weights });
-  
+
   const tabs = [
-    { id: 'login', title: 'Вход' },
-    { id: 'register', title: 'Регистрация' },
+    { id: "login", title: "Вход" },
+    { id: "register", title: "Регистрация" },
   ];
 
   const handleTabPress = (tabId: string) => {
-    setActiveTab(tabId as 'login' | 'register');
+    setActiveTab(tabId as "login" | "register");
   };
 
   const handleLogin = async () => {
@@ -58,20 +71,22 @@ const AuthScreen: React.FC = () => {
         email,
         password,
         name: email,
-      }).then((res: any) => {
-        setAuth(res.user);
-      }).catch((err: any) => {
-        if (err.response.status === 409) {
-          signInWithEmail({
-            email,
-            password,
-          }).then((res: any) => {
-            setAuth(res.user);
-          })
-        }
       })
+        .then((res) => {
+          setAuth(res.user);
+        })
+        .catch((err) => {
+          if (err.response.status === 409) {
+            signInWithEmail({
+              email,
+              password,
+            }).then((res) => {
+              setAuth(res.user);
+            });
+          }
+        });
     } catch (error) {
-      console.error('Ошибка входа:', error);
+      console.error("Ошибка входа:", error);
     } finally {
       setIsLoading(false);
     }
@@ -80,7 +95,7 @@ const AuthScreen: React.FC = () => {
   const handleRegister = () => {
    
     (global as any).registrationData = { email, password, name };
-    router.push('/registration-city' as any);
+    router.push("/registration-city" as any);
   };
 
   const handleSocialLogin = (provider: string) => {
@@ -91,24 +106,34 @@ const AuthScreen: React.FC = () => {
     router.push('/forgot-password' as any);
   };
 
-
-
-
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <SafeAreaView style={styles.container} edges={["top"]}>
       {/* Градиентный фон */}
       <LinearGradient
-        colors={['#4ADEDE', '#32C3E4', '#19A7E9', '#28ADEA', '#4BBAEE', '#5DC1F0', '#74CAF2']}
+        colors={[
+          "#4ADEDE",
+          "#32C3E4",
+          "#19A7E9",
+          "#28ADEA",
+          "#4BBAEE",
+          "#5DC1F0",
+          "#74CAF2",
+        ]}
         style={styles.gradientBackground}
         start={{ x: 0.5, y: 0 }}
         end={{ x: 0.5, y: 1 }}
       />
-      
+
       {/* Логотип */}
-      <View style={[styles.logoContainer, { 
-        paddingTop: isSmallScreen ? sizes.sm : sizes.m,
-        paddingBottom: isSmallScreen ? sizes.sm : sizes.m 
-      }]}>
+      <View
+        style={[
+          styles.logoContainer,
+          {
+            paddingTop: isSmallScreen ? sizes.sm : sizes.m,
+            paddingBottom: isSmallScreen ? sizes.sm : sizes.m,
+          },
+        ]}
+      >
         <View style={styles.logoCard}>
           <MaskedView
             style={styles.gradientTextContainer}
@@ -250,23 +275,28 @@ const AuthScreen: React.FC = () => {
                 <View style={styles.divider} />
               </View>
 
-              <View style={styles.socialButtonsContainer}>
-                <TouchableOpacity
-                  style={styles.socialButton}
-                  onPress={() => handleSocialLogin('telegram')}
-                >
-                  <Icon name="telegram" size={24} color="#229ED9" />
-                  <Text style={styles.socialButtonText}>Telegram</Text>
-                </TouchableOpacity>
+            <View style={styles.socialButtonsContainer}>
+              <TelegramLoginWidget
+                user={user}
+                onAuth={(data: RegisterResponseDto) => {
+                  initSocialAuth(data);
+                }}
+              />
 
-                <TouchableOpacity
-                  style={styles.socialButton}
-                  onPress={() => handleSocialLogin('vk')}
-                >
-                  <Icon name="vk" size={24} color="#0077FF" />
-                  <Text style={styles.socialButtonText}>Вконтакте</Text>
-                </TouchableOpacity>
-              </View>
+              <VKAuthWithoutSdk
+                config={{
+                  clientId: "54007159",
+                  redirectUri:
+                    "https://dockmapapi-production.up.railway.app/auth/vk/callback",
+                  scope: "email phone",
+                }}
+                onSuccess={(data: RegisterResponseDto) => {
+                  initSocialAuth(data);
+                }}
+                onError={(error) => {
+                  console.log(error, "error");
+                }}
+              />
             </View>
           </View>
 
@@ -278,11 +308,11 @@ const AuthScreen: React.FC = () => {
   );
 };
 
-const createStyles = ({ 
-  colors, 
-  sizes, 
-  fonts, 
-  weights 
+const createStyles = ({
+  colors,
+  sizes,
+  fonts,
+  weights,
 }: {
   colors: ThemeColors;
   sizes: any;
