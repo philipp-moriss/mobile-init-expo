@@ -7,19 +7,25 @@ import { useGetMe } from "@/src/modules/auth/api/use-get-me";
 import { useAuthStore } from "@/src/modules/auth/stores/auth.store";
 import { queryClient } from "@/src/shared/api/configs/query-client-config";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Toaster } from "sonner-native";
 import { ThemeProvider } from "../src/shared/use-theme";
 
 const RootStack = () => {
-  const [isAppInitialized, setIsAppInitialized] = useState(false);
-  const { isAuthenticated, isLoading, isFirstEnter, setAuth } = useAuthStore();
+  const {
+    isAuthenticated,
+    isLoading,
+    isFirstEnter,
+    isInitialized,
+    setIsInitialized,
+    setAuth,
+  } = useAuthStore();
 
   const { data: user, isLoading: isLoadingGetMe } = useGetMe();
-
+  
   useEffect(() => {
-    if (!isAppInitialized || isLoading) {
+    if (!isInitialized || isLoading) {
       return;
     }
     if (user) {
@@ -32,11 +38,11 @@ const RootStack = () => {
     } else {
       router.replace("/(auth)");
     }
-  }, [isAuthenticated, isLoading, isAppInitialized, isFirstEnter, user, setAuth]);
+  }, [isAuthenticated, isLoading, isFirstEnter, user, setAuth, isInitialized]);
 
   useEffect(() => {
-    if (!isAppInitialized) {
-      setIsAppInitialized(true);
+    if (!isInitialized) {
+      setIsInitialized();
     }
   }, []);
 

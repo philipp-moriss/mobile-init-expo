@@ -15,6 +15,7 @@ import BackgroundCircles from '@components/ui-kit/background-circles';
 import Button from '@components/ui-kit/button';
 import OnboardingPagination from '@components/ui-kit/onboarding-pagination';
 import OnboardingSlide from '@components/ui-kit/onboarding-slide';
+import { router } from 'expo-router';
 
 const { width } = Dimensions.get('window');
 const slideInnerWidth = width;
@@ -59,12 +60,14 @@ const OnboardingScreen: React.FC = () => {
         setIsProgrammaticScroll(false);
       }, 300);
     } else {
-      setIsFirstEnter(false);
+      setIsFirstEnter(true);
+      router.replace("/(auth)");
     }
   };
 
   const handleSkip = () => {
-    setIsFirstEnter(false);
+    setIsFirstEnter(true);
+    router.replace("/(auth)");
   };
 
   const handleScroll = (event: any) => {

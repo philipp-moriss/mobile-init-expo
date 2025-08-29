@@ -3,7 +3,7 @@ import { MutationKey } from "../../../shared/api/constants/api-keys/mutation-key
 import { RegisterEmailDto, RegisterResponseDto } from "@/src/shared/api/types/data-contracts";
 import { ApiRequest } from "@/src/shared/api/types/native-types-api";
 import { api } from "@/src/shared/api/utils/axios-api-base";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { setRefreshToken, setToken } from "@/src/shared/utils/token";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { toast } from "sonner-native";
@@ -17,8 +17,8 @@ export const useSignUpWithEmail = () => {
         mutationFn: signUp,
         onSuccess: async (data) => {
             if (data) {
-                await AsyncStorage.setItem("token", data?.accessToken);
-                await AsyncStorage.setItem("refresh", data?.refreshToken);
+                await setToken(data?.accessToken);
+                await setRefreshToken(data?.refreshToken);
                 // await queryClient.invalidateQueries({
                     // queryKey: [QueryKey.GET_ME],
                 // });
@@ -26,7 +26,7 @@ export const useSignUpWithEmail = () => {
             }
         },
         onError: (error: AxiosError<{ message: string }>) => {
-            toast.error(error?.response?.data?.message, {duration: 10000});
+            toast.error(error?.response?.data?.message || 'An error occurred', {duration: 10000});
         }
     });
 };

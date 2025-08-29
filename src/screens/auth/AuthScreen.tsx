@@ -24,9 +24,10 @@ import {
   ThemeWeights,
   useTheme,
 } from "@/src/shared/use-theme";
+import { setRefreshToken, setToken } from "@/src/shared/utils/token";
 import Button from "@components/ui-kit/button";
+import PrivacyPolicy from '@components/ui-kit/privacy-policy';
 import Tabs from "@components/ui-kit/tabs";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import Input from "../../shared/components/ui-kit/input";
 
 const AuthScreen: React.FC = () => {
@@ -48,8 +49,8 @@ const AuthScreen: React.FC = () => {
 
   const initSocialAuth = async (data: RegisterResponseDto) => {
     setAuth(data.user);
-    await AsyncStorage.setItem("token", data.accessToken);
-    await AsyncStorage.setItem("refreshToken", data.refreshToken);
+    await setToken(data.accessToken);
+    await setRefreshToken(data.refreshToken);
   };
 
   const styles = createStyles({ colors, sizes, fonts, weights });
@@ -67,24 +68,12 @@ const AuthScreen: React.FC = () => {
     if (!email || !password) return;
     setIsLoading(true);
     try {
-      signUpWithEmail({
+      signInWithEmail({
         email,
         password,
-        name: email,
-      })
-        .then((res) => {
-          setAuth(res.user);
-        })
-        .catch((err) => {
-          if (err.response.status === 409) {
-            signInWithEmail({
-              email,
-              password,
-            }).then((res) => {
-              setAuth(res.user);
-            });
-          }
-        });
+      }).then((res) => {
+        setAuth(res.user);
+      });
     } catch (error) {
       console.error("Ошибка входа:", error);
     } finally {
@@ -275,28 +264,29 @@ const AuthScreen: React.FC = () => {
                 <View style={styles.divider} />
               </View>
 
-            <View style={styles.socialButtonsContainer}>
-              <TelegramLoginWidget
-                user={user}
-                onAuth={(data: RegisterResponseDto) => {
-                  initSocialAuth(data);
-                }}
-              />
+              <View style={styles.socialButtonsContainer}>
+                <TelegramLoginWidget
+                  user={user}
+                  onAuth={(data: RegisterResponseDto) => {
+                    initSocialAuth(data);
+                  }}
+                />
 
-              <VKAuthWithoutSdk
-                config={{
-                  clientId: "54007159",
-                  redirectUri:
-                    "https://dockmapapi-production.up.railway.app/auth/vk/callback",
-                  scope: "email phone",
-                }}
-                onSuccess={(data: RegisterResponseDto) => {
-                  initSocialAuth(data);
-                }}
-                onError={(error) => {
-                  console.log(error, "error");
-                }}
-              />
+                <VKAuthWithoutSdk
+                  config={{
+                    clientId: "54007159",
+                    redirectUri:
+                      "https://dockmapapi-production.up.railway.app/auth/vk/callback",
+                    scope: "email phone",
+                  }}
+                  onSuccess={(data: RegisterResponseDto) => {
+                    initSocialAuth(data);
+                  }}
+                  onError={(error) => {
+                    console.log(error, "error");
+                  }}
+                />
+              </View>
             </View>
           </View>
 

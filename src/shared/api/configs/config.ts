@@ -1,7 +1,7 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { stringify } from "qs";
 
+import { getRefreshToken, getToken, removeRefreshToken, removeToken, setRefreshToken, setToken } from "../../utils/token";
 import { QS_OPTIONS } from "../constants/qs-options";
 
 export const API_URL = "https://dockmapapi-production.up.railway.app/";
@@ -19,7 +19,7 @@ export const instance = axios.create({
 
 instance.interceptors.request.use(
   async (config) => {
-    const token = await AsyncStorage.getItem("token");
+    const token = await getToken();
     if (token) {
       //@ts-ignore
       config.headers = {
@@ -41,9 +41,9 @@ instance.interceptors.response.use(
     if (error?.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
-        const refreshToken = await AsyncStorage.getItem("refresh");
+        const refreshToken = await getRefreshToken();
         if (!refreshToken) {
-          await AsyncStorage.removeItem("token");
+          await removeToken();
           return Promise.reject(error);
         }
 
@@ -52,14 +52,14 @@ instance.interceptors.response.use(
         });
 
         const { access_token, refresh_token } = response.data;
-        await AsyncStorage.setItem("token", access_token);
-        await AsyncStorage.setItem("refresh", refresh_token);
+        await setToken(access_token);
+        await setRefreshToken(refresh_token);
 
         originalRequest.headers.Authorization = `Bearer ${access_token}`;
         return instance(originalRequest);
       } catch (e) {
-        await AsyncStorage.removeItem("token");
-        await AsyncStorage.removeItem("refresh");
+        await removeToken();
+        await removeRefreshToken();
         return Promise.reject(error);
       }
     }
